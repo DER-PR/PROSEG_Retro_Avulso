@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0B6B3A">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Retro Avulso — PROSEG PARANÁ</title>
+<style>
+  :root{
+    --verde:#0B6B3A;--verde-esc:#084d2a;--verde-cl:#e6f1ea;
+    --amarelo:#F2B705;--vermelho:#C8362B;
+    --tinta:#14201a;--cinza:#677770;--cinza-cl:#e7ece9;
+    --fundo:#eef1ef;--branco:#fff;--linha:#d6ddd9;
+    --sombra:0 1px 3px rgba(8,40,24,.10),0 6px 18px rgba(8,40,24,.06);--raio:14px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fundo);color:var(--tinta);font-size:17px;line-height:1.4;-webkit-text-size-adjust:100%}
+  .app{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  header{background:var(--verde);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:20;box-shadow:var(--sombra);display:flex;align-items:center;gap:12px}
+  header .marca{width:40px;height:40px;border:3px solid #fff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-weight:800;font-size:13px;letter-spacing:.5px;background:var(--verde-esc)}
+  header h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.2px;line-height:1.1}
+  header p{margin:2px 0 0;font-size:12px;opacity:.85;font-weight:500}
+  .progresso{background:var(--branco);padding:10px 16px;border-bottom:1px solid var(--linha);display:flex;gap:10px;align-items:center;position:sticky;top:68px;z-index:15}
+  .progresso .barra{flex:1;height:10px;background:var(--cinza-cl);border-radius:6px;overflow:hidden}
+  .progresso .barra i{display:block;height:100%;background:var(--verde);width:0;transition:width .25s}
+  .progresso .num{font-size:13px;font-weight:700;color:var(--cinza);white-space:nowrap}
+  main{flex:1;padding:16px;display:flex;flex-direction:column;gap:14px}
+  .esconde{display:none !important}
+  nav.tabs{position:sticky;bottom:0;background:var(--branco);border-top:1px solid var(--linha);display:flex;z-index:20;box-shadow:0 -2px 10px rgba(8,40,24,.05)}
+  nav.tabs button{flex:1;background:none;border:none;padding:10px 4px 12px;color:var(--cinza);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+  nav.tabs button .ic{font-size:20px;line-height:1}
+  nav.tabs button.ativo{color:var(--verde)}
+  .cartao{background:var(--branco);border-radius:var(--raio);box-shadow:var(--sombra);padding:16px}
+  .cartao h2{margin:0 0 4px;font-size:15px;font-weight:800;letter-spacing:.2px}
+  .cartao .dica{font-size:13px;color:var(--cinza);margin:0 0 14px}
+  label.campo{display:block;font-size:13px;font-weight:700;color:var(--cinza);margin:0 0 6px;text-transform:uppercase;letter-spacing:.4px}
+  input[type=text],input[type=number],textarea{width:100%;padding:13px 14px;font-size:17px;border:1.5px solid var(--linha);border-radius:10px;background:#fbfcfb;color:var(--tinta);font-family:inherit}
+  input:focus,textarea:focus{outline:none;border-color:var(--verde);background:#fff}
+  textarea{min-height:64px;resize:vertical}
+  .grupo{margin-bottom:14px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;font-size:17px;font-weight:800;border:none;border-radius:12px;cursor:pointer;letter-spacing:.3px}
+  .btn-primario{background:var(--verde);color:#fff}.btn-primario:active{background:var(--verde-esc)}
+  .btn-sec{background:var(--cinza-cl);color:var(--tinta)}
+  .btn-perigo{background:var(--vermelho);color:#fff}
+  .btn-linha{background:#fff;color:var(--verde);border:2px solid var(--verde)}
+  .btn:disabled{opacity:.45}
+  .toggle{display:flex;gap:10px}
+  .toggle button{flex:1;padding:16px;font-size:17px;font-weight:800;border:2px solid var(--linha);border-radius:12px;background:#fbfcfb;color:var(--cinza);cursor:pointer;letter-spacing:.3px}
+  .toggle button.sel-sim{background:var(--verde);border-color:var(--verde);color:#fff}
+  .toggle button.sel-nao{background:var(--vermelho);border-color:var(--vermelho);color:#fff}
+  .stepper{display:flex;align-items:stretch;gap:8px}
+  .stepper button{width:58px;font-size:26px;font-weight:800;border:2px solid var(--linha);background:#fbfcfb;border-radius:12px;color:var(--verde);cursor:pointer}
+  .stepper input{text-align:center;font-size:22px;font-weight:800}
+  .ctx{background:var(--verde-cl);border-radius:10px;padding:12px 14px;margin:0 0 16px;font-size:14px;line-height:1.5}
+  .ctx b{color:var(--verde-esc)}
+  .ctx .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:6px}
+  .placa{background:var(--branco);border-radius:var(--raio);box-shadow:var(--sombra);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;border-left:6px solid var(--amarelo);margin-bottom:10px}
+  .placa.medida{border-left-color:var(--verde)}
+  .placa .km{background:var(--verde);color:#fff;border:2.5px solid #fff;outline:2px solid var(--verde);border-radius:8px;padding:8px 6px;min-width:76px;text-align:center;flex:0 0 auto}
+  .placa-thumb{width:46px;height:46px;object-fit:contain;background:#fff;border:1px solid var(--linha);border-radius:6px;padding:2px;flex:0 0 auto}
+  .placa-thumb.vazia{background:var(--cinza-cl)}
+  .filtros{display:flex;gap:8px;margin-bottom:12px}
+  .chip{flex:1;padding:9px 6px;border:1.5px solid var(--linha);border-radius:20px;background:#fff;font-weight:700;font-size:13px;color:var(--cinza);cursor:pointer}
+  .chip.ativo{background:var(--verde);color:#fff;border-color:var(--verde)}
+  .chip b{font-weight:800}
+  .lote-lista{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;border:1px solid var(--linha);border-radius:10px;padding:8px;background:#fbfcfb}
+  .lote-row{display:flex;align-items:center;gap:10px}
+  .lote-km{flex:0 0 auto;font-weight:700;font-size:14px;min-width:118px;color:var(--tinta)}
+  .lote-alt{flex:1;padding:10px 12px !important;font-size:16px !important}
+  .placa .km b{display:block;font-size:9px;font-weight:700;letter-spacing:1px;opacity:.8}
+  .placa .km span{display:block;font-size:15px;font-weight:800;line-height:1.1}
+  .placa .info{flex:1;min-width:0}
+  .placa .info .cod{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .placa .info .det{font-size:12px;color:var(--cinza);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .placa .selo{font-size:11px;font-weight:800;padding:5px 9px;border-radius:20px;flex:0 0 auto}
+  .selo.pend{background:#fdf3d3;color:#8a6d00}.selo.feito{background:var(--verde-cl);color:var(--verde)}
+  .busca{display:flex;gap:8px;margin-bottom:4px}.busca input{flex:1}
+  .gps{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--cinza);background:var(--cinza-cl);padding:10px 12px;border-radius:10px}
+  .gps.ok{background:var(--verde-cl);color:var(--verde-esc)}
+  .resumo{display:flex;gap:10px}
+  .resumo div{flex:1;background:var(--branco);border-radius:var(--raio);box-shadow:var(--sombra);padding:14px;text-align:center}
+  .resumo .n{font-size:30px;font-weight:800;line-height:1}
+  .resumo .l{font-size:12px;color:var(--cinza);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+  .resumo .v-ok .n{color:var(--verde)}.resumo .v-pend .n{color:var(--amarelo)}
+  .aviso{font-size:12.5px;color:var(--cinza);background:#fffbeb;border:1px solid #f3e3a8;padding:10px 12px;border-radius:10px;line-height:1.45}
+  .toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:var(--tinta);color:#fff;padding:12px 18px;border-radius:30px;font-size:14px;font-weight:700;opacity:0;transition:.25s;z-index:50;pointer-events:none;box-shadow:var(--sombra);max-width:90%;text-align:center}
+  .toast.mostra{opacity:1;transform:translateX(-50%) translateY(0)}
+  .vazio{text-align:center;color:var(--cinza);padding:40px 16px;font-size:14px}
+  .placa-img{display:block;width:100%;max-height:200px;object-fit:contain;background:#fff;border:1px solid var(--linha);border-radius:8px;padding:6px;margin:0 0 10px;cursor:zoom-in}
+  #lightbox{position:fixed;inset:0;background:rgba(8,20,14,.92);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+  #lightbox.on{display:flex}
+  #lightbox img{max-width:100%;max-height:82vh;background:#fff;border-radius:10px;padding:8px}
+  #lightbox .fechar{position:absolute;top:14px;right:16px;color:#fff;font-size:30px;font-weight:800;background:none;border:none;cursor:pointer}
+  #lightbox .leg{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#fff;font-size:13px;opacity:.85}
+  /* seletor de rodovias */
+  .rod{background:var(--branco);border-radius:var(--raio);box-shadow:var(--sombra);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;border-left:6px solid var(--cinza-cl)}
+  .rod.baixada{border-left-color:var(--verde)}
+  .rod .info{flex:1;min-width:0}
+  .rod .nome{font-weight:800;font-size:17px}
+  .rod .det{font-size:12px;color:var(--cinza)}
+  .rod .selo{font-size:11px;font-weight:800;padding:5px 10px;border-radius:20px;flex:0 0 auto}
+  .rod .selo.on{background:var(--verde-cl);color:var(--verde)}
+  .rod .selo.off{background:var(--cinza-cl);color:var(--cinza)}
+  .dlbar{height:8px;background:var(--cinza-cl);border-radius:6px;overflow:hidden;margin-top:8px}
+  .dlbar i{display:block;height:100%;background:var(--verde);width:0;transition:width .2s}
+  .retro-cor{border:2px solid var(--linha);border-radius:12px;padding:12px;margin-bottom:12px;background:#fbfcfb}
+  .retro-cor .topo{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+  .retro-cor select{flex:1;padding:13px;font-size:16px;border:2px solid var(--linha);border-radius:10px;background:#fff;font-weight:700;color:var(--tinta)}
+  .retro-cor .rm{flex:0 0 auto;width:46px;height:46px;border:2px solid var(--vermelho);color:var(--vermelho);background:#fff;border-radius:10px;font-size:18px;font-weight:800;cursor:pointer}
+  .retro-leituras{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .retro-leituras .lt{display:flex;flex-direction:column;gap:3px}
+  .retro-leituras .lt label{font-size:11px;font-weight:700;color:var(--cinza);text-transform:uppercase;letter-spacing:.3px;margin:0}
+  .retro-leituras .lt input{padding:11px;font-size:16px;margin:0}
+  .badge-r{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;background:var(--amarelo);color:#5a4a00;font-size:12px;font-weight:800;margin-left:6px;flex:0 0 auto}
+  .btn-retro{background:#fff;color:var(--verde);border:2px solid var(--verde);margin-top:4px}
+  .placa .selo{white-space:nowrap}
+  .selo.retro{background:var(--verde-esc);color:#fff}
+  .selo.retropend{background:#8a6d00;color:#fff}
+  .selo.fechada{background:#0b4f8a;color:#fff}
+  .retro-res{margin-top:8px;font-size:13px;color:var(--cinza)}
+  .retro-res b{color:var(--tinta)}
+  .ov{position:fixed;inset:0;background:rgba(8,20,14,.6);display:none;align-items:flex-start;justify-content:center;z-index:120;padding:14px;overflow:auto}
+  .ovcard{background:#fff;border-radius:14px;padding:16px;max-width:560px;width:100%;margin:20px 0}
+  .ovhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-size:17px;font-weight:800}
+  .ovx{cursor:pointer;color:var(--cinza);font-size:22px;padding:0 6px;line-height:1}
+  .librow{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--cinza-cl)}
+  .librow:last-child{border-bottom:none}
+  .libnome{font-weight:800;font-size:15px}
+  .libdet{font-size:12px;color:var(--cinza);margin-top:3px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="marca">DER</div>
+    <div><h1 id="hdrTitulo">PROSEG PARANÁ</h1><p id="hdrSub">Retro Avulso · Sinalização Vertical</p></div>
+  </header>
+  <div class="progresso esconde" id="barraProg"><div class="barra"><i id="progFill"></i></div><div class="num" id="progNum">0 / 0</div></div>
+  <main>
+    <!-- SELETOR DE RODOVIAS -->
+    <section id="vRod">
+      <div class="cartao" style="margin-bottom:14px">
+        <h2>Selecione a rodovia</h2>
+        <p class="dica">As rodovias baixadas funcionam offline. Para uso em campo sem sinal, baixe na base.</p>
+        <button class="btn btn-primario" id="btnBaixarTodas" onclick="baixarTodas()">⬇ Baixar todas para uso offline</button>
+        <div class="dlbar esconde" id="dlBar"><i id="dlFill"></i></div>
+        <button class="btn btn-sec" style="margin-top:10px" onclick="abrirLiberar()">🧹 Liberar espaço do aparelho</button>
+      </div>
+      <div id="listaRod"></div>
+    </section>
+
+    <!-- LISTA -->
+    <section id="vLista" class="esconde">
+      <button class="btn btn-sec" style="margin-bottom:12px" onclick="mostraRodovias()">← Voltar para rodovias</button>
+      <div class="busca">
+        <input type="text" id="busca" placeholder="Buscar por Km ou código..." oninput="renderLista()">
+        <button class="btn btn-sec" style="width:auto;padding:13px 16px" onclick="document.getElementById('busca').value='';renderLista()">Limpar</button>
+      </div>
+      <div class="filtros">
+        <button class="chip ativo" data-f="todas" onclick="setFiltro('todas',this)">Todas <b id="nTodas"></b></button>
+        <button class="chip" data-f="pendente" onclick="setFiltro('pendente',this)">Sem retro <b id="nPend"></b></button>
+        <button class="chip" data-f="medida" onclick="setFiltro('medida',this)">Com retro <b id="nMed"></b></button>
+      </div>
+      <div id="listaPlacas"></div>
+    </section>
+
+    <!-- FICHA -->
+    <section id="vFicha" class="esconde">
+      <div class="cartao">
+        <button class="btn btn-sec" style="margin-bottom:14px" onclick="voltarFicha()">← Voltar sem salvar</button>
+        <h2 id="fichaKm">Km --</h2>
+        <p class="dica" id="fichaCod">Codigo</p>
+        <div class="ctx" id="fichaCtx"></div>
+        <div id="fichaFechada" class="esconde" style="background:#e7f0fb;border:2px solid #b9d4f2;color:#0b4f8a;border-radius:10px;padding:12px 14px;font-weight:700;margin-top:12px;line-height:1.45">🔒 Medição <span id="fichaMedFech"></span> fechada — esta placa já foi medida e não pode ser alterada. Os detalhes ficam no painel.</div>
+        <div id="fichaEdit">
+        <button class="btn btn-retro" onclick="abrirRetro(atual)">🔦 Realizar Retro</button>
+        <div class="grupo" style="margin-top:14px">
+          <label class="campo">Instalada no Km correto?</label>
+          <div class="toggle" id="tgKm">
+            <button type="button" data-v="S" onclick="setToggle('tgKm','S',this)">Sim</button>
+            <button type="button" data-v="N" onclick="setToggle('tgKm','N',this)">Não</button>
+          </div>
+        </div>
+        <div class="grupo">
+          <label class="campo" id="lblAltura">Altura do suporte instalado (m)</label>
+          <div class="stepper">
+            <button type="button" onclick="ajustaAltura(-0.05)">−</button>
+            <input type="text" id="fAltura" inputmode="decimal" placeholder="0,00" oninput="marcaSujo()">
+            <button type="button" onclick="ajustaAltura(0.05)">+</button>
+          </div>
+        </div>
+        <div class="grupo esconde" id="grupoAltura2">
+          <label class="campo">Altura do suporte 2 (m)</label>
+          <div class="stepper">
+            <button type="button" onclick="ajustaAltura2(-0.05)">−</button>
+            <input type="text" id="fAltura2" inputmode="decimal" placeholder="0,00" oninput="marcaSujo()">
+            <button type="button" onclick="ajustaAltura2(0.05)">+</button>
+          </div>
+        </div>
+        <div class="grupo">
+          <label class="campo">Casca de pinus?</label>
+          <div class="toggle" id="tgPinus">
+            <button type="button" data-v="S" onclick="setToggle('tgPinus','S',this)">Sim</button>
+            <button type="button" data-v="N" onclick="setToggle('tgPinus','N',this)">Não</button>
+          </div>
+        </div>
+        <div class="grupo">
+          <label class="campo">Foto (índice automático por rodovia)</label>
+          <input type="text" id="fFoto" inputmode="numeric" placeholder="ex.: 1" oninput="marcaSujo()">
+          <input type="file" id="fFotoCam" accept="image/*" capture="environment" style="display:none" onchange="processaFoto(this)">
+          <button class="btn btn-linha" style="margin-top:8px" onclick="tirarFoto()">📷 Tirar foto georreferenciada</button>
+          <div id="fFotoPrev"></div>
+        </div>
+        <div class="grupo">
+          <label class="campo">Observações (opcional)</label>
+          <textarea id="fObs" placeholder="Ex.: suporte amassado, refletivo danificado..." oninput="marcaSujo()"></textarea>
+        </div>
+        <div class="grupo">
+          <label class="campo">Coordenada GPS</label>
+          <div class="gps" id="gpsBox"><span id="gpsTxt">Capturada automaticamente ao tirar a foto</span></div>
+        </div>
+        <button class="btn btn-primario" onclick="salvarFicha(true)">Salvar e ir para a próxima</button>
+        <button class="btn btn-sec" style="margin-top:8px" onclick="salvarFicha(false)">Salvar e voltar à lista</button>
+        <button class="btn" id="btnPendente" style="margin-top:8px;background:#fff;color:var(--vermelho);border:2px solid var(--vermelho)" onclick="marcarPendente()">↩ Marcar como pendente</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RETRO -->
+    <section id="vRetro" class="esconde">
+      <div class="cartao">
+        <button class="btn btn-sec" style="margin-bottom:14px" onclick="fecharRetro()">← Voltar</button>
+        <h2>Ensaio de Retrorrefletância</h2>
+        <div class="ctx" id="retroResumo"></div>
+        <div class="grupo">
+          <label class="campo">Data do ensaio</label>
+          <input type="text" id="retroData" inputmode="numeric" placeholder="dd/mm/aaaa" oninput="retroSujo=true">
+        </div>
+        <div id="retroCores"></div>
+        <button class="btn btn-linha" onclick="addCor()">+ Adicionar cor</button>
+        <div class="grupo" style="margin-top:16px">
+          <label class="campo">Foto georreferenciada</label>
+          <input type="file" id="retroFotoCam" accept="image/*" capture="environment" style="display:none" onchange="processaFotoRetro(this)">
+          <button type="button" class="btn btn-linha" onclick="tirarFotoRetro()">📷 Tirar foto georreferenciada</button>
+          <div id="retroFotoPrev"></div>
+        </div>
+        <button class="btn btn-primario" style="margin-top:14px" onclick="salvarRetro()">Salvar ensaio</button>
+        <button class="btn" id="btnExcluirRetro" style="margin-top:8px;background:#fff;color:var(--vermelho);border:2px solid var(--vermelho);display:none" onclick="excluirRetro()">🗑 Excluir ensaio</button>
+      </div>
+    </section>
+
+    <!-- LOTE -->
+    <section id="vLote" class="esconde">
+      <button class="btn btn-sec" style="margin-bottom:12px" onclick="irPara('lista')">← Voltar à lista</button>
+      <div id="loteGrupos"></div>
+    </section>
+    <section id="vLoteForm" class="esconde">
+      <div class="cartao" id="loteFormCard"></div>
+    </section>
+
+    <!-- AJUSTES -->
+    <section id="vConfig" class="esconde">
+      <div class="cartao">
+        <h2>Identificação da medição</h2>
+        <p class="dica">Rodovia atual: <b id="cfgRod">--</b></p>
+        <div class="grupo"><label class="campo">Empresa / Consórcio</label><input type="text" id="cEmpresa" oninput="salvarConfig()"></div>
+        <div class="grupo"><label class="campo">Técnico responsável</label><input type="text" id="cTecnico" placeholder="Nome do técnico" oninput="salvarConfig()"></div>
+        <div class="grupo"><label class="campo">Nº da medição</label><input type="text" id="cMedicao" inputmode="numeric" placeholder="Ex.: 03" oninput="salvarConfig()"></div>
+        <button class="btn btn-linha" onclick="trocarRodovia()">↔ Trocar de rodovia</button>
+      </div>
+      <div class="cartao">
+        <h2>Manutenção</h2>
+        <button class="btn btn-perigo" onclick="zerarMedicoes()">Limpar medições desta rodovia</button>
+      </div>
+    </section>
+
+    <!-- EXPORTAR -->
+    <section id="vExport" class="esconde">
+      <div class="resumo">
+        <div class="v-ok"><div class="n" id="rOk">0</div><div class="l">Com retro</div></div>
+        <div class="v-pend"><div class="n" id="rPend">0</div><div class="l">Sem retro</div></div>
+      </div>
+      <div class="cartao">
+        <h2>Enviar a tabela de retro</h2>
+        <p class="dica">Gera as colunas da sua aba de lançamento (<b>B a V</b>), uma linha por cor, só placas com ensaio. Calcula <b>Média, Mínimo NBR e Status</b>. Cole na <b>aba de retro</b> (a partir de <b>B13</b>).</p>
+        <button class="btn btn-primario" onclick="compartilharRetro()">📲 Enviar tabela por WhatsApp / e-mail</button>
+        <button class="btn btn-retro" style="margin-top:10px" onclick="copiarRetro()">🔦 Copiar dados de retro</button>
+      </div>
+      <div class="cartao">
+        <h2>Enviar as fotos</h2>
+        <p class="dica">Manda <b>todas as fotos desta rodovia</b> num arquivo <b>.ZIP</b> (georreferenciado, com carimbo). Envie no WhatsApp <b>como Documento</b> para não perder o GPS. Se passar do limite, divide em partes.</p>
+        <button class="btn btn-primario" onclick="exportarFotos()">📦 Enviar fotos por WhatsApp (ZIP)</button>
+        <div id="partesFotos"></div>
+      </div>
+      <div class="aviso">⚠️ Os dados ficam salvos neste aparelho. Exporte ao fim de cada trecho ou dia. Internet só é necessária para baixar rodovias e enviar o arquivo final.</div>
+    </section>
+  </main>
+  <nav class="tabs esconde" id="navTabs">
+    <button id="tLista" class="ativo" onclick="irPara('lista')"><span class="ic">📋</span>Placas</button>
+    <button id="tExport" onclick="irPara('export')"><span class="ic">⬇</span>Exportar</button>
+    <button id="tConfig" onclick="irPara('config')"><span class="ic">⚙️</span>Ajustes</button>
+  </nav>
+</div>
+<div id="lightbox" onclick="fecharZoom()"><button class="fechar" onclick="fecharZoom()">×</button><img id="lbImg" src="" alt="Projeto da placa"><div class="leg">Toque para fechar</div></div>
+<div id="ovLiberar" class="ov">
+  <div class="ovcard">
+    <div class="ovhd"><span>🧹 Liberar espaço</span><span class="ovx" onclick="fecharLiberar()">✕</span></div>
+    <p class="dica" style="margin-top:0">Apague do celular as rodovias já concluídas para liberar espaço. As <b>concluídas e travadas</b> voltam automaticamente da nuvem quando você reabrir com internet — nada se perde.</p>
+    <div id="liberarLista"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script id="piexif">!function(){"use strict";var e={};function t(e){return m(">"+y("B",e.length),e)}function a(e){return m(">"+y("H",e.length),e)}function n(e){return m(">"+y("L",e.length),e)}function i(e,i,r){var o,l,s,p,S="",f="";if("Byte"==i)(o=e.length)<=4?f=t(e)+y("\0",4-o):(f=m(">L",[r]),S=t(e));else if("Short"==i)(o=e.length)<=2?f=a(e)+y("\0\0",2-o):(f=m(">L",[r]),S=a(e));else if("Long"==i)(o=e.length)<=1?f=n(e):(f=m(">L",[r]),S=n(e));else if("Ascii"==i)(o=(l=e+"\0").length)>4?(f=m(">L",[r]),S=l):f=l+y("\0",4-o);else if("Rational"==i){if("number"==typeof e[0])o=1,s=e[0],p=e[1],l=m(">L",[s])+m(">L",[p]);else{o=e.length,l="";for(var c=0;c<o;c++)s=e[c][0],p=e[c][1],l+=m(">L",[s])+m(">L",[p])}f=m(">L",[r]),S=l}else if("SRational"==i){if("number"==typeof e[0])o=1,s=e[0],p=e[1],l=m(">l",[s])+m(">l",[p]);else{o=e.length,l="";for(c=0;c<o;c++)s=e[c][0],p=e[c][1],l+=m(">l",[s])+m(">l",[p])}f=m(">L",[r]),S=l}else"Undefined"==i&&((o=e.length)>4?(f=m(">L",[r]),S=e):f=e+y("\0",4-o));return[m(">L",[o]),f,S]}function r(e,t,a){var n,r=Object.keys(e).length,o=m(">H",[r]);n=["0th","1st"].indexOf(t)>-1?2+12*r+4:2+12*r;var l="",s="";for(var p in e)if("string"==typeof p&&(p=parseInt(p)),!("0th"==t&&[34665,34853].indexOf(p)>-1||"Exif"==t&&40965==p||"1st"==t&&[513,514].indexOf(p)>-1)){var y=e[p],S=m(">H",[p]),h=c[t][p].type,d=m(">H",[f[h]]);"number"==typeof y&&(y=[y]);var g=i(y,h,8+n+a+s.length);l+=S+d+g[0]+g[1],s+=g[2]}return[o+l,s]}function o(e){var t;if("ÿØ"==e.slice(0,2))t=function(e){for(var t,a=0;a<e.length;a++)if("ÿá"==(t=e[a]).slice(0,2)&&"Exif\0\0"==t.slice(4,10))return t;return null}(S(e)),this.tiftag=t?t.slice(10):null;else if(["II","MM"].indexOf(e.slice(0,2))>-1)this.tiftag=e;else{if("Exif"!=e.slice(0,4))throw new Error("Given file is neither JPEG nor TIFF.");this.tiftag=e.slice(6)}}if(e.version="1.0.4",e.remove=function(e){var t=!1;if("ÿØ"==e.slice(0,2));else{if("data:image/jpeg;base64,"!=e.slice(0,23)&&"data:image/jpg;base64,"!=e.slice(0,22))throw new Error("Given data is not jpeg.");e=s(e.split(",")[1]),t=!0}var a=S(e).filter(function(e){return!("ÿá"==e.slice(0,2)&&"Exif\0\0"==e.slice(4,10))}).join("");return t&&(a="data:image/jpeg;base64,"+l(a)),a},e.insert=function(e,t){var a=!1;if("Exif\0\0"!=e.slice(0,6))throw new Error("Given data is not exif.");if("ÿØ"==t.slice(0,2));else{if("data:image/jpeg;base64,"!=t.slice(0,23)&&"data:image/jpg;base64,"!=t.slice(0,22))throw new Error("Given data is not jpeg.");t=s(t.split(",")[1]),a=!0}var n="ÿá"+m(">H",[e.length+2])+e,i=function(e,t){var a=!1,n=[];e.forEach(function(i,r){"ÿá"==i.slice(0,2)&&"Exif\0\0"==i.slice(4,10)&&(a?n.unshift(r):(e[r]=t,a=!0))}),n.forEach(function(t){e.splice(t,1)}),!a&&t&&(e=[e[0],t].concat(e.slice(1)));return e.join("")}(S(t),n);return a&&(i="data:image/jpeg;base64,"+l(i)),i},e.load=function(e){var t;if("string"!=typeof e)throw new Error("'load' gots invalid type argument.");if("ÿØ"==e.slice(0,2))t=e;else if("data:image/jpeg;base64,"==e.slice(0,23)||"data:image/jpg;base64,"==e.slice(0,22))t=s(e.split(",")[1]);else{if("Exif"!=e.slice(0,4))throw new Error("'load' gots invalid file data.");t=e.slice(6)}var a={"0th":{},Exif:{},GPS:{},Interop:{},"1st":{},thumbnail:null},n=new o(t);if(null===n.tiftag)return a;"II"==n.tiftag.slice(0,2)?n.endian_mark="<":n.endian_mark=">";var i=p(n.endian_mark+"L",n.tiftag.slice(4,8))[0];a["0th"]=n.get_ifd(i,"0th");var r=a["0th"].first_ifd_pointer;if(delete a["0th"].first_ifd_pointer,34665 in a["0th"]&&(i=a["0th"][34665],a.Exif=n.get_ifd(i,"Exif")),34853 in a["0th"]&&(i=a["0th"][34853],a.GPS=n.get_ifd(i,"GPS")),40965 in a.Exif&&(i=a.Exif[40965],a.Interop=n.get_ifd(i,"Interop")),"\0\0\0\0"!=r&&(i=p(n.endian_mark+"L",r)[0],a["1st"]=n.get_ifd(i,"1st"),513 in a["1st"]&&514 in a["1st"])){var l=a["1st"][513]+a["1st"][514],m=n.tiftag.slice(a["1st"][513],l);a.thumbnail=m}return a},e.dump=function(t){var a,n,i,o,l,s,p=(a=t,JSON.parse(JSON.stringify(a))),y=!1,c=!1,h=!1,d=!1;n="0th"in p?p["0th"]:{},"Exif"in p&&Object.keys(p.Exif).length||"Interop"in p&&Object.keys(p.Interop).length?(n[34665]=1,y=!0,i=p.Exif,"Interop"in p&&Object.keys(p.Interop).length?(i[40965]=1,h=!0,o=p.Interop):Object.keys(i).indexOf(e.ExifIFD.InteroperabilityTag.toString())>-1&&delete i[40965]):Object.keys(n).indexOf(e.ImageIFD.ExifTag.toString())>-1&&delete n[34665],"GPS"in p&&Object.keys(p.GPS).length?(n[e.ImageIFD.GPSTag]=1,c=!0,l=p.GPS):Object.keys(n).indexOf(e.ImageIFD.GPSTag.toString())>-1&&delete n[e.ImageIFD.GPSTag],"1st"in p&&"thumbnail"in p&&null!=p.thumbnail&&(d=!0,p["1st"][513]=1,p["1st"][514]=1,s=p["1st"]);var g,u,P,C=r(n,"0th",0),R=C[0].length+12*y+12*c+4+C[1].length,L="",I=0,D="",G=0,A="",b=0,v="";(y&&(I=(g=r(i,"Exif",R))[0].length+12*h+g[1].length),c&&(G=(D=r(l,"GPS",R+I).join("")).length),h)&&(b=(A=r(o,"Interop",R+I+G).join("")).length);if(d&&(u=r(s,"1st",R+I+G+b),(P=function(e){var t=S(e);for(;"ÿà"<=t[1].slice(0,2)&&t[1].slice(0,2)<="ÿï";)t=[t[0]].concat(t.slice(2));return t.join("")}(p.thumbnail)).length>64e3))throw new Error("Given thumbnail is too large. max 64kB");var w="",x="",E="",T="\0\0\0\0";if(y){var k=m(">L",[F=8+R]);w=m(">H",[34665])+m(">H",[f.Long])+m(">L",[1])+k}if(c){k=m(">L",[F=8+R+I]);x=m(">H",[34853])+m(">H",[f.Long])+m(">L",[1])+k}if(h){k=m(">L",[F=8+R+I+G]);E=m(">H",[40965])+m(">H",[f.Long])+m(">L",[1])+k}if(d){var F;T=m(">L",[F=8+R+I+G+b]);var B="\0\0\0\0"+m(">L",[F+u[0].length+24+4+u[1].length]),M="\0\0\0\0"+m(">L",[P.length]);v=u[0]+B+M+"\0\0\0\0"+u[1]+P}var O=C[0]+w+x+T+C[1];return y&&(L=g[0]+E+g[1]),"Exif\0\0MM\0*\0\0\0\b"+O+L+D+A+v},o.prototype={get_ifd:function(e,t){var a,n={},i=p(this.endian_mark+"H",this.tiftag.slice(e,e+2))[0],r=e+2;a=["0th","1st"].indexOf(t)>-1?"Image":t;for(var o=0;o<i;o++){e=r+12*o;var l=p(this.endian_mark+"H",this.tiftag.slice(e,e+2))[0],s=[p(this.endian_mark+"H",this.tiftag.slice(e+2,e+4))[0],p(this.endian_mark+"L",this.tiftag.slice(e+4,e+8))[0],this.tiftag.slice(e+8,e+12)];l in c[a]&&(n[l]=this.convert_value(s))}return"0th"==t&&(e=r+12*i,n.first_ifd_pointer=this.tiftag.slice(e,e+4)),n},convert_value:function(e){var t,a=null,n=e[0],i=e[1],r=e[2];if(1==n)i>4?(t=p(this.endian_mark+"L",r)[0],a=p(this.endian_mark+y("B",i),this.tiftag.slice(t,t+i))):a=p(this.endian_mark+y("B",i),r.slice(0,i));else if(2==n)i>4?(t=p(this.endian_mark+"L",r)[0],a=this.tiftag.slice(t,t+i-1)):a=r.slice(0,i-1);else if(3==n)i>2?(t=p(this.endian_mark+"L",r)[0],a=p(this.endian_mark+y("H",i),this.tiftag.slice(t,t+2*i))):a=p(this.endian_mark+y("H",i),r.slice(0,2*i));else if(4==n)i>1?(t=p(this.endian_mark+"L",r)[0],a=p(this.endian_mark+y("L",i),this.tiftag.slice(t,t+4*i))):a=p(this.endian_mark+y("L",i),r);else if(5==n)if(t=p(this.endian_mark+"L",r)[0],i>1){a=[];for(var o=0;o<i;o++)a.push([p(this.endian_mark+"L",this.tiftag.slice(t+8*o,t+4+8*o))[0],p(this.endian_mark+"L",this.tiftag.slice(t+4+8*o,t+8+8*o))[0]])}else a=[p(this.endian_mark+"L",this.tiftag.slice(t,t+4))[0],p(this.endian_mark+"L",this.tiftag.slice(t+4,t+8))[0]];else if(7==n)i>4?(t=p(this.endian_mark+"L",r)[0],a=this.tiftag.slice(t,t+i)):a=r.slice(0,i);else if(9==n)i>1?(t=p(this.endian_mark+"L",r)[0],a=p(this.endian_mark+y("l",i),this.tiftag.slice(t,t+4*i))):a=p(this.endian_mark+y("l",i),r);else{if(10!=n)throw new Error("Exif might be wrong. Got incorrect value type to decode. type:"+n);if(t=p(this.endian_mark+"L",r)[0],i>1){a=[];for(o=0;o<i;o++)a.push([p(this.endian_mark+"l",this.tiftag.slice(t+8*o,t+4+8*o))[0],p(this.endian_mark+"l",this.tiftag.slice(t+4+8*o,t+8+8*o))[0]])}else a=[p(this.endian_mark+"l",this.tiftag.slice(t,t+4))[0],p(this.endian_mark+"l",this.tiftag.slice(t+4,t+8))[0]]}return a instanceof Array&&1==a.length?a[0]:a}},"undefined"!=typeof window&&"function"==typeof window.btoa)var l=window.btoa;if(void 0===l)l=function(e){for(var t,a,n,i,r,o,l,s="",m=0,p="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";m<e.length;)i=(t=e.charCodeAt(m++))>>2,r=(3&t)<<4|(a=e.charCodeAt(m++))>>4,o=(15&a)<<2|(n=e.charCodeAt(m++))>>6,l=63&n,isNaN(a)?o=l=64:isNaN(n)&&(l=64),s=s+p.charAt(i)+p.charAt(r)+p.charAt(o)+p.charAt(l);return s};if("undefined"!=typeof window&&"function"==typeof window.atob)var s=window.atob;if(void 0===s)s=function(e){var t,a,n,i,r,o,l="",s=0,m="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";for(e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");s<e.length;)t=m.indexOf(e.charAt(s++))<<2|(i=m.indexOf(e.charAt(s++)))>>4,a=(15&i)<<4|(r=m.indexOf(e.charAt(s++)))>>2,n=(3&r)<<6|(o=m.indexOf(e.charAt(s++))),l+=String.fromCharCode(t),64!=r&&(l+=String.fromCharCode(a)),64!=o&&(l+=String.fromCharCode(n));return l};function m(e,t){if(!(t instanceof Array))throw new Error("'pack' error. Got invalid type argument.");if(e.length-1!=t.length)throw new Error("'pack' error. "+(e.length-1)+" marks, "+t.length+" elements.");var a;if("<"==e[0])a=!0;else{if(">"!=e[0])throw new Error("");a=!1}for(var n="",i=1,r=null,o=null,l=null;o=e[i];){if("b"==o.toLowerCase()){if(r=t[i-1],"b"==o&&r<0&&(r+=256),r>255||r<0)throw new Error("'pack' error.");l=String.fromCharCode(r)}else if("H"==o){if((r=t[i-1])>65535||r<0)throw new Error("'pack' error.");l=String.fromCharCode(Math.floor(r%65536/256))+String.fromCharCode(r%256),a&&(l=l.split("").reverse().join(""))}else{if("l"!=o.toLowerCase())throw new Error("'pack' error.");if(r=t[i-1],"l"==o&&r<0&&(r+=4294967296),r>4294967295||r<0)throw new Error("'pack' error.");l=String.fromCharCode(Math.floor(r/16777216))+String.fromCharCode(Math.floor(r%16777216/65536))+String.fromCharCode(Math.floor(r%65536/256))+String.fromCharCode(r%256),a&&(l=l.split("").reverse().join(""))}n+=l,i+=1}return n}function p(e,t){if("string"!=typeof t)throw new Error("'unpack' error. Got invalid type argument.");for(var a,n=0,i=1;i<e.length;i++)if("b"==e[i].toLowerCase())n+=1;else if("h"==e[i].toLowerCase())n+=2;else{if("l"!=e[i].toLowerCase())throw new Error("'unpack' error. Got invalid mark.");n+=4}if(n!=t.length)throw new Error("'unpack' error. Mismatch between symbol and string length. "+n+":"+t.length);if("<"==e[0])a=!0;else{if(">"!=e[0])throw new Error("'unpack' error.");a=!1}for(var r=[],o=0,l=1,s=null,m=null,p=null,y="";m=e[l];){if("b"==m.toLowerCase())p=1,s=(y=t.slice(o,o+p)).charCodeAt(0),"b"==m&&s>=128&&(s-=256);else if("H"==m)p=2,y=t.slice(o,o+p),a&&(y=y.split("").reverse().join("")),s=256*y.charCodeAt(0)+y.charCodeAt(1);else{if("l"!=m.toLowerCase())throw new Error("'unpack' error. "+m);p=4,y=t.slice(o,o+p),a&&(y=y.split("").reverse().join("")),s=16777216*y.charCodeAt(0)+65536*y.charCodeAt(1)+256*y.charCodeAt(2)+y.charCodeAt(3),"l"==m&&s>=2147483648&&(s-=4294967296)}r.push(s),o+=p,l+=1}return r}function y(e,t){for(var a="",n=0;n<t;n++)a+=e;return a}function S(e){if("ÿØ"!=e.slice(0,2))throw new Error("Given data isn't JPEG.");for(var t=2,a=["ÿØ"];;){if("ÿÚ"==e.slice(t,t+2)){a.push(e.slice(t));break}var n=t+p(">H",e.slice(t+2,t+4))[0]+2;if(a.push(e.slice(t,n)),(t=n)>=e.length)throw new Error("Wrong JPEG data.")}return a}var f={Byte:1,Ascii:2,Short:3,Long:4,Rational:5,Undefined:7,SLong:9,SRational:10},c={Image:{11:{name:"ProcessingSoftware",type:"Ascii"},254:{name:"NewSubfileType",type:"Long"},255:{name:"SubfileType",type:"Short"},256:{name:"ImageWidth",type:"Long"},257:{name:"ImageLength",type:"Long"},258:{name:"BitsPerSample",type:"Short"},259:{name:"Compression",type:"Short"},262:{name:"PhotometricInterpretation",type:"Short"},263:{name:"Threshholding",type:"Short"},264:{name:"CellWidth",type:"Short"},265:{name:"CellLength",type:"Short"},266:{name:"FillOrder",type:"Short"},269:{name:"DocumentName",type:"Ascii"},270:{name:"ImageDescription",type:"Ascii"},271:{name:"Make",type:"Ascii"},272:{name:"Model",type:"Ascii"},273:{name:"StripOffsets",type:"Long"},274:{name:"Orientation",type:"Short"},277:{name:"SamplesPerPixel",type:"Short"},278:{name:"RowsPerStrip",type:"Long"},279:{name:"StripByteCounts",type:"Long"},282:{name:"XResolution",type:"Rational"},283:{name:"YResolution",type:"Rational"},284:{name:"PlanarConfiguration",type:"Short"},290:{name:"GrayResponseUnit",type:"Short"},291:{name:"GrayResponseCurve",type:"Short"},292:{name:"T4Options",type:"Long"},293:{name:"T6Options",type:"Long"},296:{name:"ResolutionUnit",type:"Short"},301:{name:"TransferFunction",type:"Short"},305:{name:"Software",type:"Ascii"},306:{name:"DateTime",type:"Ascii"},315:{name:"Artist",type:"Ascii"},316:{name:"HostComputer",type:"Ascii"},317:{name:"Predictor",type:"Short"},318:{name:"WhitePoint",type:"Rational"},319:{name:"PrimaryChromaticities",type:"Rational"},320:{name:"ColorMap",type:"Short"},321:{name:"HalftoneHints",type:"Short"},322:{name:"TileWidth",type:"Short"},323:{name:"TileLength",type:"Short"},324:{name:"TileOffsets",type:"Short"},325:{name:"TileByteCounts",type:"Short"},330:{name:"SubIFDs",type:"Long"},332:{name:"InkSet",type:"Short"},333:{name:"InkNames",type:"Ascii"},334:{name:"NumberOfInks",type:"Short"},336:{name:"DotRange",type:"Byte"},337:{name:"TargetPrinter",type:"Ascii"},338:{name:"ExtraSamples",type:"Short"},339:{name:"SampleFormat",type:"Short"},340:{name:"SMinSampleValue",type:"Short"},341:{name:"SMaxSampleValue",type:"Short"},342:{name:"TransferRange",type:"Short"},343:{name:"ClipPath",type:"Byte"},344:{name:"XClipPathUnits",type:"Long"},345:{name:"YClipPathUnits",type:"Long"},346:{name:"Indexed",type:"Short"},347:{name:"JPEGTables",type:"Undefined"},351:{name:"OPIProxy",type:"Short"},512:{name:"JPEGProc",type:"Long"},513:{name:"JPEGInterchangeFormat",type:"Long"},514:{name:"JPEGInterchangeFormatLength",type:"Long"},515:{name:"JPEGRestartInterval",type:"Short"},517:{name:"JPEGLosslessPredictors",type:"Short"},518:{name:"JPEGPointTransforms",type:"Short"},519:{name:"JPEGQTables",type:"Long"},520:{name:"JPEGDCTables",type:"Long"},521:{name:"JPEGACTables",type:"Long"},529:{name:"YCbCrCoefficients",type:"Rational"},530:{name:"YCbCrSubSampling",type:"Short"},531:{name:"YCbCrPositioning",type:"Short"},532:{name:"ReferenceBlackWhite",type:"Rational"},700:{name:"XMLPacket",type:"Byte"},18246:{name:"Rating",type:"Short"},18249:{name:"RatingPercent",type:"Short"},32781:{name:"ImageID",type:"Ascii"},33421:{name:"CFARepeatPatternDim",type:"Short"},33422:{name:"CFAPattern",type:"Byte"},33423:{name:"BatteryLevel",type:"Rational"},33432:{name:"Copyright",type:"Ascii"},33434:{name:"ExposureTime",type:"Rational"},34377:{name:"ImageResources",type:"Byte"},34665:{name:"ExifTag",type:"Long"},34675:{name:"InterColorProfile",type:"Undefined"},34853:{name:"GPSTag",type:"Long"},34857:{name:"Interlace",type:"Short"},34858:{name:"TimeZoneOffset",type:"Long"},34859:{name:"SelfTimerMode",type:"Short"},37387:{name:"FlashEnergy",type:"Rational"},37388:{name:"SpatialFrequencyResponse",type:"Undefined"},37389:{name:"Noise",type:"Undefined"},37390:{name:"FocalPlaneXResolution",type:"Rational"},37391:{name:"FocalPlaneYResolution",type:"Rational"},37392:{name:"FocalPlaneResolutionUnit",type:"Short"},37393:{name:"ImageNumber",type:"Long"},37394:{name:"SecurityClassification",type:"Ascii"},37395:{name:"ImageHistory",type:"Ascii"},37397:{name:"ExposureIndex",type:"Rational"},37398:{name:"TIFFEPStandardID",type:"Byte"},37399:{name:"SensingMethod",type:"Short"},40091:{name:"XPTitle",type:"Byte"},40092:{name:"XPComment",type:"Byte"},40093:{name:"XPAuthor",type:"Byte"},40094:{name:"XPKeywords",type:"Byte"},40095:{name:"XPSubject",type:"Byte"},50341:{name:"PrintImageMatching",type:"Undefined"},50706:{name:"DNGVersion",type:"Byte"},50707:{name:"DNGBackwardVersion",type:"Byte"},50708:{name:"UniqueCameraModel",type:"Ascii"},50709:{name:"LocalizedCameraModel",type:"Byte"},50710:{name:"CFAPlaneColor",type:"Byte"},50711:{name:"CFALayout",type:"Short"},50712:{name:"LinearizationTable",type:"Short"},50713:{name:"BlackLevelRepeatDim",type:"Short"},50714:{name:"BlackLevel",type:"Rational"},50715:{name:"BlackLevelDeltaH",type:"SRational"},50716:{name:"BlackLevelDeltaV",type:"SRational"},50717:{name:"WhiteLevel",type:"Short"},50718:{name:"DefaultScale",type:"Rational"},50719:{name:"DefaultCropOrigin",type:"Short"},50720:{name:"DefaultCropSize",type:"Short"},50721:{name:"ColorMatrix1",type:"SRational"},50722:{name:"ColorMatrix2",type:"SRational"},50723:{name:"CameraCalibration1",type:"SRational"},50724:{name:"CameraCalibration2",type:"SRational"},50725:{name:"ReductionMatrix1",type:"SRational"},50726:{name:"ReductionMatrix2",type:"SRational"},50727:{name:"AnalogBalance",type:"Rational"},50728:{name:"AsShotNeutral",type:"Short"},50729:{name:"AsShotWhiteXY",type:"Rational"},50730:{name:"BaselineExposure",type:"SRational"},50731:{name:"BaselineNoise",type:"Rational"},50732:{name:"BaselineSharpness",type:"Rational"},50733:{name:"BayerGreenSplit",type:"Long"},50734:{name:"LinearResponseLimit",type:"Rational"},50735:{name:"CameraSerialNumber",type:"Ascii"},50736:{name:"LensInfo",type:"Rational"},50737:{name:"ChromaBlurRadius",type:"Rational"},50738:{name:"AntiAliasStrength",type:"Rational"},50739:{name:"ShadowScale",type:"SRational"},50740:{name:"DNGPrivateData",type:"Byte"},50741:{name:"MakerNoteSafety",type:"Short"},50778:{name:"CalibrationIlluminant1",type:"Short"},50779:{name:"CalibrationIlluminant2",type:"Short"},50780:{name:"BestQualityScale",type:"Rational"},50781:{name:"RawDataUniqueID",type:"Byte"},50827:{name:"OriginalRawFileName",type:"Byte"},50828:{name:"OriginalRawFileData",type:"Undefined"},50829:{name:"ActiveArea",type:"Short"},50830:{name:"MaskedAreas",type:"Short"},50831:{name:"AsShotICCProfile",type:"Undefined"},50832:{name:"AsShotPreProfileMatrix",type:"SRational"},50833:{name:"CurrentICCProfile",type:"Undefined"},50834:{name:"CurrentPreProfileMatrix",type:"SRational"},50879:{name:"ColorimetricReference",type:"Short"},50931:{name:"CameraCalibrationSignature",type:"Byte"},50932:{name:"ProfileCalibrationSignature",type:"Byte"},50934:{name:"AsShotProfileName",type:"Byte"},50935:{name:"NoiseReductionApplied",type:"Rational"},50936:{name:"ProfileName",type:"Byte"},50937:{name:"ProfileHueSatMapDims",type:"Long"},50938:{name:"ProfileHueSatMapData1",type:"Float"},50939:{name:"ProfileHueSatMapData2",type:"Float"},50940:{name:"ProfileToneCurve",type:"Float"},50941:{name:"ProfileEmbedPolicy",type:"Long"},50942:{name:"ProfileCopyright",type:"Byte"},50964:{name:"ForwardMatrix1",type:"SRational"},50965:{name:"ForwardMatrix2",type:"SRational"},50966:{name:"PreviewApplicationName",type:"Byte"},50967:{name:"PreviewApplicationVersion",type:"Byte"},50968:{name:"PreviewSettingsName",type:"Byte"},50969:{name:"PreviewSettingsDigest",type:"Byte"},50970:{name:"PreviewColorSpace",type:"Long"},50971:{name:"PreviewDateTime",type:"Ascii"},50972:{name:"RawImageDigest",type:"Undefined"},50973:{name:"OriginalRawFileDigest",type:"Undefined"},50974:{name:"SubTileBlockSize",type:"Long"},50975:{name:"RowInterleaveFactor",type:"Long"},50981:{name:"ProfileLookTableDims",type:"Long"},50982:{name:"ProfileLookTableData",type:"Float"},51008:{name:"OpcodeList1",type:"Undefined"},51009:{name:"OpcodeList2",type:"Undefined"},51022:{name:"OpcodeList3",type:"Undefined"}},Exif:{33434:{name:"ExposureTime",type:"Rational"},33437:{name:"FNumber",type:"Rational"},34850:{name:"ExposureProgram",type:"Short"},34852:{name:"SpectralSensitivity",type:"Ascii"},34855:{name:"ISOSpeedRatings",type:"Short"},34856:{name:"OECF",type:"Undefined"},34864:{name:"SensitivityType",type:"Short"},34865:{name:"StandardOutputSensitivity",type:"Long"},34866:{name:"RecommendedExposureIndex",type:"Long"},34867:{name:"ISOSpeed",type:"Long"},34868:{name:"ISOSpeedLatitudeyyy",type:"Long"},34869:{name:"ISOSpeedLatitudezzz",type:"Long"},36864:{name:"ExifVersion",type:"Undefined"},36867:{name:"DateTimeOriginal",type:"Ascii"},36868:{name:"DateTimeDigitized",type:"Ascii"},37121:{name:"ComponentsConfiguration",type:"Undefined"},37122:{name:"CompressedBitsPerPixel",type:"Rational"},37377:{name:"ShutterSpeedValue",type:"SRational"},37378:{name:"ApertureValue",type:"Rational"},37379:{name:"BrightnessValue",type:"SRational"},37380:{name:"ExposureBiasValue",type:"SRational"},37381:{name:"MaxApertureValue",type:"Rational"},37382:{name:"SubjectDistance",type:"Rational"},37383:{name:"MeteringMode",type:"Short"},37384:{name:"LightSource",type:"Short"},37385:{name:"Flash",type:"Short"},37386:{name:"FocalLength",type:"Rational"},37396:{name:"SubjectArea",type:"Short"},37500:{name:"MakerNote",type:"Undefined"},37510:{name:"UserComment",type:"Ascii"},37520:{name:"SubSecTime",type:"Ascii"},37521:{name:"SubSecTimeOriginal",type:"Ascii"},37522:{name:"SubSecTimeDigitized",type:"Ascii"},40960:{name:"FlashpixVersion",type:"Undefined"},40961:{name:"ColorSpace",type:"Short"},40962:{name:"PixelXDimension",type:"Long"},40963:{name:"PixelYDimension",type:"Long"},40964:{name:"RelatedSoundFile",type:"Ascii"},40965:{name:"InteroperabilityTag",type:"Long"},41483:{name:"FlashEnergy",type:"Rational"},41484:{name:"SpatialFrequencyResponse",type:"Undefined"},41486:{name:"FocalPlaneXResolution",type:"Rational"},41487:{name:"FocalPlaneYResolution",type:"Rational"},41488:{name:"FocalPlaneResolutionUnit",type:"Short"},41492:{name:"SubjectLocation",type:"Short"},41493:{name:"ExposureIndex",type:"Rational"},41495:{name:"SensingMethod",type:"Short"},41728:{name:"FileSource",type:"Undefined"},41729:{name:"SceneType",type:"Undefined"},41730:{name:"CFAPattern",type:"Undefined"},41985:{name:"CustomRendered",type:"Short"},41986:{name:"ExposureMode",type:"Short"},41987:{name:"WhiteBalance",type:"Short"},41988:{name:"DigitalZoomRatio",type:"Rational"},41989:{name:"FocalLengthIn35mmFilm",type:"Short"},41990:{name:"SceneCaptureType",type:"Short"},41991:{name:"GainControl",type:"Short"},41992:{name:"Contrast",type:"Short"},41993:{name:"Saturation",type:"Short"},41994:{name:"Sharpness",type:"Short"},41995:{name:"DeviceSettingDescription",type:"Undefined"},41996:{name:"SubjectDistanceRange",type:"Short"},42016:{name:"ImageUniqueID",type:"Ascii"},42032:{name:"CameraOwnerName",type:"Ascii"},42033:{name:"BodySerialNumber",type:"Ascii"},42034:{name:"LensSpecification",type:"Rational"},42035:{name:"LensMake",type:"Ascii"},42036:{name:"LensModel",type:"Ascii"},42037:{name:"LensSerialNumber",type:"Ascii"},42240:{name:"Gamma",type:"Rational"}},GPS:{0:{name:"GPSVersionID",type:"Byte"},1:{name:"GPSLatitudeRef",type:"Ascii"},2:{name:"GPSLatitude",type:"Rational"},3:{name:"GPSLongitudeRef",type:"Ascii"},4:{name:"GPSLongitude",type:"Rational"},5:{name:"GPSAltitudeRef",type:"Byte"},6:{name:"GPSAltitude",type:"Rational"},7:{name:"GPSTimeStamp",type:"Rational"},8:{name:"GPSSatellites",type:"Ascii"},9:{name:"GPSStatus",type:"Ascii"},10:{name:"GPSMeasureMode",type:"Ascii"},11:{name:"GPSDOP",type:"Rational"},12:{name:"GPSSpeedRef",type:"Ascii"},13:{name:"GPSSpeed",type:"Rational"},14:{name:"GPSTrackRef",type:"Ascii"},15:{name:"GPSTrack",type:"Rational"},16:{name:"GPSImgDirectionRef",type:"Ascii"},17:{name:"GPSImgDirection",type:"Rational"},18:{name:"GPSMapDatum",type:"Ascii"},19:{name:"GPSDestLatitudeRef",type:"Ascii"},20:{name:"GPSDestLatitude",type:"Rational"},21:{name:"GPSDestLongitudeRef",type:"Ascii"},22:{name:"GPSDestLongitude",type:"Rational"},23:{name:"GPSDestBearingRef",type:"Ascii"},24:{name:"GPSDestBearing",type:"Rational"},25:{name:"GPSDestDistanceRef",type:"Ascii"},26:{name:"GPSDestDistance",type:"Rational"},27:{name:"GPSProcessingMethod",type:"Undefined"},28:{name:"GPSAreaInformation",type:"Undefined"},29:{name:"GPSDateStamp",type:"Ascii"},30:{name:"GPSDifferential",type:"Short"},31:{name:"GPSHPositioningError",type:"Rational"}},Interop:{1:{name:"InteroperabilityIndex",type:"Ascii"}}};c["0th"]=c.Image,c["1st"]=c.Image,e.TAGS=c,e.ImageIFD={ProcessingSoftware:11,NewSubfileType:254,SubfileType:255,ImageWidth:256,ImageLength:257,BitsPerSample:258,Compression:259,PhotometricInterpretation:262,Threshholding:263,CellWidth:264,CellLength:265,FillOrder:266,DocumentName:269,ImageDescription:270,Make:271,Model:272,StripOffsets:273,Orientation:274,SamplesPerPixel:277,RowsPerStrip:278,StripByteCounts:279,XResolution:282,YResolution:283,PlanarConfiguration:284,GrayResponseUnit:290,GrayResponseCurve:291,T4Options:292,T6Options:293,ResolutionUnit:296,TransferFunction:301,Software:305,DateTime:306,Artist:315,HostComputer:316,Predictor:317,WhitePoint:318,PrimaryChromaticities:319,ColorMap:320,HalftoneHints:321,TileWidth:322,TileLength:323,TileOffsets:324,TileByteCounts:325,SubIFDs:330,InkSet:332,InkNames:333,NumberOfInks:334,DotRange:336,TargetPrinter:337,ExtraSamples:338,SampleFormat:339,SMinSampleValue:340,SMaxSampleValue:341,TransferRange:342,ClipPath:343,XClipPathUnits:344,YClipPathUnits:345,Indexed:346,JPEGTables:347,OPIProxy:351,JPEGProc:512,JPEGInterchangeFormat:513,JPEGInterchangeFormatLength:514,JPEGRestartInterval:515,JPEGLosslessPredictors:517,JPEGPointTransforms:518,JPEGQTables:519,JPEGDCTables:520,JPEGACTables:521,YCbCrCoefficients:529,YCbCrSubSampling:530,YCbCrPositioning:531,ReferenceBlackWhite:532,XMLPacket:700,Rating:18246,RatingPercent:18249,ImageID:32781,CFARepeatPatternDim:33421,CFAPattern:33422,BatteryLevel:33423,Copyright:33432,ExposureTime:33434,ImageResources:34377,ExifTag:34665,InterColorProfile:34675,GPSTag:34853,Interlace:34857,TimeZoneOffset:34858,SelfTimerMode:34859,FlashEnergy:37387,SpatialFrequencyResponse:37388,Noise:37389,FocalPlaneXResolution:37390,FocalPlaneYResolution:37391,FocalPlaneResolutionUnit:37392,ImageNumber:37393,SecurityClassification:37394,ImageHistory:37395,ExposureIndex:37397,TIFFEPStandardID:37398,SensingMethod:37399,XPTitle:40091,XPComment:40092,XPAuthor:40093,XPKeywords:40094,XPSubject:40095,PrintImageMatching:50341,DNGVersion:50706,DNGBackwardVersion:50707,UniqueCameraModel:50708,LocalizedCameraModel:50709,CFAPlaneColor:50710,CFALayout:50711,LinearizationTable:50712,BlackLevelRepeatDim:50713,BlackLevel:50714,BlackLevelDeltaH:50715,BlackLevelDeltaV:50716,WhiteLevel:50717,DefaultScale:50718,DefaultCropOrigin:50719,DefaultCropSize:50720,ColorMatrix1:50721,ColorMatrix2:50722,CameraCalibration1:50723,CameraCalibration2:50724,ReductionMatrix1:50725,ReductionMatrix2:50726,AnalogBalance:50727,AsShotNeutral:50728,AsShotWhiteXY:50729,BaselineExposure:50730,BaselineNoise:50731,BaselineSharpness:50732,BayerGreenSplit:50733,LinearResponseLimit:50734,CameraSerialNumber:50735,LensInfo:50736,ChromaBlurRadius:50737,AntiAliasStrength:50738,ShadowScale:50739,DNGPrivateData:50740,MakerNoteSafety:50741,CalibrationIlluminant1:50778,CalibrationIlluminant2:50779,BestQualityScale:50780,RawDataUniqueID:50781,OriginalRawFileName:50827,OriginalRawFileData:50828,ActiveArea:50829,MaskedAreas:50830,AsShotICCProfile:50831,AsShotPreProfileMatrix:50832,CurrentICCProfile:50833,CurrentPreProfileMatrix:50834,ColorimetricReference:50879,CameraCalibrationSignature:50931,ProfileCalibrationSignature:50932,AsShotProfileName:50934,NoiseReductionApplied:50935,ProfileName:50936,ProfileHueSatMapDims:50937,ProfileHueSatMapData1:50938,ProfileHueSatMapData2:50939,ProfileToneCurve:50940,ProfileEmbedPolicy:50941,ProfileCopyright:50942,ForwardMatrix1:50964,ForwardMatrix2:50965,PreviewApplicationName:50966,PreviewApplicationVersion:50967,PreviewSettingsName:50968,PreviewSettingsDigest:50969,PreviewColorSpace:50970,PreviewDateTime:50971,RawImageDigest:50972,OriginalRawFileDigest:50973,SubTileBlockSize:50974,RowInterleaveFactor:50975,ProfileLookTableDims:50981,ProfileLookTableData:50982,OpcodeList1:51008,OpcodeList2:51009,OpcodeList3:51022,NoiseProfile:51041},e.ExifIFD={ExposureTime:33434,FNumber:33437,ExposureProgram:34850,SpectralSensitivity:34852,ISOSpeedRatings:34855,OECF:34856,SensitivityType:34864,StandardOutputSensitivity:34865,RecommendedExposureIndex:34866,ISOSpeed:34867,ISOSpeedLatitudeyyy:34868,ISOSpeedLatitudezzz:34869,ExifVersion:36864,DateTimeOriginal:36867,DateTimeDigitized:36868,ComponentsConfiguration:37121,CompressedBitsPerPixel:37122,ShutterSpeedValue:37377,ApertureValue:37378,BrightnessValue:37379,ExposureBiasValue:37380,MaxApertureValue:37381,SubjectDistance:37382,MeteringMode:37383,LightSource:37384,Flash:37385,FocalLength:37386,SubjectArea:37396,MakerNote:37500,UserComment:37510,SubSecTime:37520,SubSecTimeOriginal:37521,SubSecTimeDigitized:37522,FlashpixVersion:40960,ColorSpace:40961,PixelXDimension:40962,PixelYDimension:40963,RelatedSoundFile:40964,InteroperabilityTag:40965,FlashEnergy:41483,SpatialFrequencyResponse:41484,FocalPlaneXResolution:41486,FocalPlaneYResolution:41487,FocalPlaneResolutionUnit:41488,SubjectLocation:41492,ExposureIndex:41493,SensingMethod:41495,FileSource:41728,SceneType:41729,CFAPattern:41730,CustomRendered:41985,ExposureMode:41986,WhiteBalance:41987,DigitalZoomRatio:41988,FocalLengthIn35mmFilm:41989,SceneCaptureType:41990,GainControl:41991,Contrast:41992,Saturation:41993,Sharpness:41994,DeviceSettingDescription:41995,SubjectDistanceRange:41996,ImageUniqueID:42016,CameraOwnerName:42032,BodySerialNumber:42033,LensSpecification:42034,LensMake:42035,LensModel:42036,LensSerialNumber:42037,Gamma:42240},e.GPSIFD={GPSVersionID:0,GPSLatitudeRef:1,GPSLatitude:2,GPSLongitudeRef:3,GPSLongitude:4,GPSAltitudeRef:5,GPSAltitude:6,GPSTimeStamp:7,GPSSatellites:8,GPSStatus:9,GPSMeasureMode:10,GPSDOP:11,GPSSpeedRef:12,GPSSpeed:13,GPSTrackRef:14,GPSTrack:15,GPSImgDirectionRef:16,GPSImgDirection:17,GPSMapDatum:18,GPSDestLatitudeRef:19,GPSDestLatitude:20,GPSDestLongitudeRef:21,GPSDestLongitude:22,GPSDestBearingRef:23,GPSDestBearing:24,GPSDestDistanceRef:25,GPSDestDistance:26,GPSProcessingMethod:27,GPSAreaInformation:28,GPSDateStamp:29,GPSDifferential:30,GPSHPositioningError:31},e.InteropIFD={InteroperabilityIndex:1},e.GPSHelper={degToDmsRational:function(e){var t=Math.abs(e),a=t%1*60,n=a%1*60;return[[Math.floor(t),1],[Math.floor(a),1],[Math.round(100*n),100]]},dmsRationalToDeg:function(e,t){var a="S"===t||"W"===t?-1:1;return(e[0][0]/e[0][1]+e[1][0]/e[1][1]/60+e[2][0]/e[2][1]/3600)*a}},"undefined"!=typeof exports?("undefined"!=typeof module&&module.exports&&(exports=module.exports=e),exports.piexif=e):window.piexif=e}();</script>
+<script>
+"use strict";
+
+/* ====== IndexedDB ====== */
+var DB=null;
+/* ===== RETRO AVULSO: banco ISOLADO (não mexe no app de medição dos meninos) ===== */
+var VERT_BASE=(location.hostname==="localhost"||location.hostname==="127.0.0.1")?"../sinalizacao-vertical/":"https://der-pr.github.io/PROSEG_NS_Vertical/";
+function idbOpen(){return new Promise(function(res,rej){var r=indexedDB.open("proseg_retro",2);
+  r.onupgradeneeded=function(e){var db=e.target.result;
+    if(!db.objectStoreNames.contains("ref"))db.createObjectStore("ref");
+    if(!db.objectStoreNames.contains("trab"))db.createObjectStore("trab");
+    if(!db.objectStoreNames.contains("meta"))db.createObjectStore("meta");
+    if(!db.objectStoreNames.contains("fotos"))db.createObjectStore("fotos");};
+  r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+function idbGet(store,key){return new Promise(function(res){try{var t=DB.transaction(store,"readonly").objectStore(store).get(key);t.onsuccess=function(){res(t.result);};t.onerror=function(){res(null);};}catch(e){res(null);}});}
+function idbPut(store,key,val){return new Promise(function(res){try{var t=DB.transaction(store,"readwrite").objectStore(store).put(val,key);t.onsuccess=function(){res(true);};t.onerror=function(){res(false);};}catch(e){res(false);}});}
+function idbKeys(store){return new Promise(function(res){try{var ks=[],t=DB.transaction(store,"readonly").objectStore(store).openCursor();t.onsuccess=function(e){var c=e.target.result;if(c){ks.push(c.key);c.continue();}else res(ks);};t.onerror=function(){res(ks);};}catch(e){res([]);}});}
+
+/* ====== Estado ====== */
+var manifest=[], rodAtual=null, placas=[], IMGS=[], cfg={empresa:"",tecnico:"",medicao:""};
+var atual=null, sujo=false, gpsTmp=null, atualGrupo=[], vAtual="rod", filtroStatus="todas", scrollLista=0;
+
+function novaLista(arr){return arr.map(function(d,i){return{
+  id:"p"+i, imgIdx:i, cod:d.cod, kmP:d.kmP, sup:d.sup, qtd:d.qtd, larg:d.larg, altP:d.altP, area:d.area, pel:d.pel||"",
+  status:"pendente", kmOk:"", altura:"", altura2:"", pinus:"", foto:"", obs:"", lat:"",lng:"",gpsAcc:"", dataHora:"", retro:null, fotoThumb:"", fotoGps:"", fechada:0
+};});}
+/* aplica as "medições fechadas" (baixa definitiva) publicadas: arquivo pequeno
+   por rodovia com { "<indice da placa>": <nº da medição> }. Vem dos dados no ar,
+   então sobrevive a limpar cache / trocar de celular. Marca a placa como medida
+   e travada. Se estiver offline/sem arquivo, mantém o que já estava. */
+async function aplicarFechadas(cod){
+  var it=manifest.find(function(x){return x.codigo===cod;}); if(!it) return;
+  var url=it.arquivo.replace(/\.json$/i,".fechadas.json");
+  var fech=null;
+  try{ var r=await fetch(url+"?ts="+Date.now());
+    if(r.ok){ fech=await r.json(); }
+    else if(r.status===404){ fech={}; }   // arquivo removido de propósito -> destrava tudo da rodovia
+    else return;                           // erro temporário do servidor -> não mexe
+  }catch(e){ return; }                     // offline -> mantém o que já estava
+  if(!fech||typeof fech!=="object") return;
+  var mudou=false;
+  // aplica as travas publicadas
+  Object.keys(fech).forEach(function(k){ var i=parseInt(k,10); var med=fech[k]; var p=placas[i];
+    if(p && (p.fechada!==med || p.status!=="medida")){ p.status="medida"; p.fechada=med; mudou=true; } });
+  // DESTRAVA: placa que estava travada mas saiu do arquivo publicado volta a editável/pendente
+  placas.forEach(function(p,i){ if(p && p.fechada!=null && !Object.prototype.hasOwnProperty.call(fech,String(i))){ p.fechada=null; p.status="pendente"; mudou=true; } });
+  if(mudou) persist();
+}
+function persist(){ if(DB&&rodAtual) idbPut("trab",rodAtual,placas); }
+
+/* ====== Inicialização ====== */
+async function init(){
+  try{ DB=await idbOpen(); }catch(e){ DB=null; }
+  if(DB){ var c=await idbGet("meta","cfg"); if(c) cfg=c; }
+  manifest=await carregaManifest();
+  await carregarRetroMaps();
+  mostraRodovias();
+}
+/* ===== RETRO AVULSO: lê os .retro.json (placas da medição N) e agrupa (unifica nova/antiga, junta PRC-280) ===== */
+var RETROMAP={}, GRUPOS={};
+function nomeUnif(cod){ return String(cod||"").replace(/\s*\(.*\)\s*$/,"").trim(); }  // "PR-427 (Antiga)"->"PR-427"; "PRC-280 (T2 Nova)"->"PRC-280"
+async function carregarRetroMaps(){
+  RETROMAP={}; GRUPOS={};
+  await Promise.all(manifest.map(async function(it){
+    try{ var url=VERT_BASE+it.arquivo.replace(/\.json$/i,".retro.json")+"?ts="+Date.now();
+      var r=await fetch(url); if(!r.ok) return; var j=await r.json();
+      if(j && j.indices && j.indices.length){ RETROMAP[it.codigo]={medicao:j.medicao, indices:j.indices, it:it}; }
+    }catch(e){}
+  }));
+  Object.keys(RETROMAP).forEach(function(cod){ var g=nomeUnif(cod); (GRUPOS[g]=GRUPOS[g]||[]).push(RETROMAP[cod]); });
+}
+async function carregaManifest(){
+  try{
+    var r=await fetch(VERT_BASE+"rodovias.json?ts="+Date.now());
+    if(!r.ok) throw 0;
+    var m=await r.json();
+    if(DB) await idbPut("meta","manifest",m);
+    return m;
+  }catch(e){
+    if(DB){ var m=await idbGet("meta","manifest"); if(m) return m; }
+    return [];
+  }
+}
+
+/* ====== Seletor de rodovias ====== */
+async function mostraRodovias(){
+  esconderTudo(); document.getElementById("vRod").classList.remove("esconde");
+  document.getElementById("navTabs").classList.add("esconde");
+  document.getElementById("barraProg").classList.add("esconde");
+  document.getElementById("hdrTitulo").textContent="PROSEG PARANÁ";
+  document.getElementById("hdrSub").textContent="Selecione a rodovia";
+  vAtual="rod"; rodAtual=null;
+  var alvo=document.getElementById("listaRod");
+  var nomes=Object.keys(GRUPOS).sort(function(a,b){return a.localeCompare(b,undefined,{numeric:true});});
+  if(!nomes.length){ alvo.innerHTML='<div class="vazio">Nenhuma rodovia com placas de retro. Gere a <b>"lista de retro"</b> no painel e suba os arquivos <b>.retro.json</b> no repositório do app de vertical, e conecte-se à internet.</div>'; return; }
+  var ms=new Set(); Object.keys(RETROMAP).forEach(function(c){ms.add(RETROMAP[c].medicao);});
+  document.getElementById("hdrSub").textContent="Retro avulso — medição "+[...ms].join("/");
+  alvo.innerHTML=nomes.map(function(nome){
+    var n=GRUPOS[nome].reduce(function(s,m){return s+m.indices.length;},0);
+    return '<div class="rod" onclick="abrirGrupo(\''+esc(nome)+'\')">'+
+      '<div class="info"><div class="nome">'+esc(nome)+'</div><div class="det">'+n+' placa(s) para retro</div></div>'+
+      '<div class="selo on">🔦</div></div>';
+  }).join("");
+}
+/* carrega as placas da med N do grupo (unificado), mescla retro/foto já salvos, e abre a lista */
+async function abrirGrupo(nome){
+  var membros=GRUPOS[nome]; if(!membros||!membros.length){ toast("Grupo não encontrado"); return; }
+  toast("Carregando "+nome+"…");
+  var merged=[], gi=0;
+  for(var mi=0;mi<membros.length;mi++){
+    var it=membros[mi].it, indices=membros[mi].indices;
+    var ref=DB? await idbGet("ref",it.codigo):null;
+    if(!ref){ try{ var r=await fetch(VERT_BASE+it.arquivo+"?ts="+Date.now()); if(!r.ok) throw 0; ref=await r.json(); if(DB) await idbPut("ref",it.codigo,ref); }catch(e){ toast("Sem conexão para baixar "+it.codigo+". Conecte-se à internet."); return; } }
+    var base=novaLista(ref.placas||[]);
+    indices.forEach(function(ix){ var p=base[ix]; if(!p) return;
+      p=Object.assign({},p); p.id="g"+(gi++); p.srcCod=it.codigo; p.srcIdx=ix; p.fechada=0; merged.push(p); });
+  }
+  placas=merged; rodAtual=nome; cfg.rodovia=nome; cfg.medicao=String((membros[0]&&membros[0].medicao)||""); IMGS=[];
+  var salvo=DB? await idbGet("trab",nome):null;
+  if(salvo && salvo.length){ var byKey={}; salvo.forEach(function(p){ byKey[(p.srcCod||"")+"#"+p.srcIdx]=p; });
+    placas.forEach(function(p){ var s=byKey[(p.srcCod||"")+"#"+p.srcIdx]; if(s){ p.retro=s.retro||null; p.foto=s.foto||""; p.fotoThumb=s.fotoThumb||""; p.fotoGps=s.fotoGps||""; p.status=s.retro?"medida":"pendente"; } }); }
+  document.getElementById("barraProg").classList.add("esconde");
+  document.getElementById("navTabs").classList.remove("esconde");
+  irPara("lista");
+}
+async function abrirRodovia(cod){
+  var ref = DB? await idbGet("ref",cod) : null;
+  if(!ref){
+    var it=manifest.find(function(x){return x.codigo===cod;});
+    if(!it){ toast("Rodovia não encontrada"); return; }
+    toast("Baixando "+cod+"...");
+    try{
+      var r=await fetch(it.arquivo+"?ts="+Date.now()); if(!r.ok) throw 0;
+      ref=await r.json();
+      if(DB) await idbPut("ref",cod,ref);
+    }catch(e){ toast("Sem conexão. Baixe esta rodovia na base, com internet."); return; }
+  }
+  IMGS = ref.imgs||[];
+  var trab = DB? await idbGet("trab",cod) : null;
+  if(!trab || !trab.length){ trab=novaLista(ref.placas||[]); if(DB) await idbPut("trab",cod,trab); }
+  placas=trab; rodAtual=cod; cfg.rodovia=cod;
+  await aplicarFechadas(cod);
+  document.getElementById("barraProg").classList.remove("esconde");
+  document.getElementById("navTabs").classList.remove("esconde");
+  irPara("lista");
+}
+function trocarRodovia(){ persist(); mostraRodovias(); }
+
+async function baixarTodas(){
+  if(!manifest.length){ toast("Lista de rodovias indisponível"); return; }
+  var btn=document.getElementById("btnBaixarTodas"); btn.disabled=true;
+  var bar=document.getElementById("dlBar"), fill=document.getElementById("dlFill"); bar.classList.remove("esconde");
+  var ok=0;
+  for(var i=0;i<manifest.length;i++){
+    var it=manifest[i];
+    var have = DB? await idbGet("ref",it.codigo) : null;
+    if(!have){
+      try{ var r=await fetch(it.arquivo+"?ts="+Date.now()); if(!r.ok) throw 0; var d=await r.json(); if(DB) await idbPut("ref",it.codigo,d); }
+      catch(e){ /* segue */ }
+    }
+    var temAgora = DB? await idbGet("ref",it.codigo) : null; if(temAgora) ok++;
+    fill.style.width=Math.round((i+1)/manifest.length*100)+"%";
+  }
+  btn.disabled=false;
+  toast(ok+" de "+manifest.length+" rodovias salvas offline");
+  mostraRodovias();
+}
+
+/* ====== Liberar espaço (apagar rodovias já concluídas do IndexedDB) ====== */
+function idbDel(store,key){return new Promise(function(res){try{var t=DB.transaction(store,"readwrite").objectStore(store).delete(key);t.onsuccess=function(){res(true);};t.onerror=function(){res(false);};}catch(e){res(false);}});}
+async function statusRodovia(cod){
+  var ref=await idbGet("ref",cod); var trab=await idbGet("trab",cod);
+  var total = (ref&&ref.placas)? ref.placas.length : (trab?trab.length:0);
+  var nFech=0;
+  var it=manifest.find(function(x){return x.codigo===cod;});
+  if(it){ try{ var r=await fetch(it.arquivo.replace(/\.json$/i,".fechadas.json")+"?ts="+Date.now()); if(r.ok){ var f=await r.json(); if(f&&typeof f==="object") nFech=Object.keys(f).length; } }catch(e){} }
+  if(!nFech && trab){ nFech=trab.filter(function(p){return p.fechada;}).length; }
+  var nMed = trab? trab.filter(function(p){return p.status==="medida";}).length : 0;
+  var bytes=0; try{ bytes=(JSON.stringify(ref||"").length + JSON.stringify(trab||"").length); }catch(e){}
+  var nFotos=0; try{ var fk=(await idbKeys("fotos")).filter(function(k){return String(k).indexOf(cod+"#")===0;}); nFotos=fk.length; for(var j=0;j<fk.length;j++){ var fr=await idbGet("fotos",fk[j]); if(fr&&fr.data) bytes+=fr.data.length; } }catch(e){}
+  return {cod:cod, total:total, nFech:nFech, nMed:nMed, nFotos:nFotos, mb:(bytes/1048576), concluida:(total>0 && nFech>=total)};
+}
+async function abrirLiberar(){
+  var ov=document.getElementById("ovLiberar"), lst=document.getElementById("liberarLista");
+  ov.style.display="flex"; lst.innerHTML='<p class="dica">Verificando o que está no aparelho…</p>';
+  var refs = DB? await idbKeys("ref") : [];
+  if(!refs.length){ lst.innerHTML='<p class="dica">Nenhuma rodovia baixada neste aparelho.</p>'; return; }
+  var html="";
+  for(var i=0;i<refs.length;i++){
+    var s=await statusRodovia(refs[i]);
+    var nome=(manifest.find(function(x){return x.codigo===s.cod;})||{}).nome||s.cod;
+    var badge = s.concluida? '<span class="selo on">✓ concluída · travada</span>' : '<span class="selo off">em andamento '+s.nMed+'/'+s.total+'</span>';
+    html+='<div class="librow"><div style="flex:1"><div class="libnome">'+esc(nome)+'</div><div class="libdet">'+s.mb.toFixed(1)+' MB &nbsp;·&nbsp; '+badge+'</div></div>'+
+      '<button class="btn '+(s.concluida?'btn-sec':'btn-perigo')+'" style="width:auto;padding:11px 16px;font-size:14px" onclick="liberarRodovia(\''+s.cod+'\','+(s.concluida?'true':'false')+')">Liberar</button></div>';
+  }
+  lst.innerHTML=html;
+}
+async function liberarRodovia(cod, concluida){
+  var msg = concluida
+    ? "Rodovia concluída e travada.\n\nLiberar é SEGURO — ao reabrir com internet, os dados voltam da nuvem. Continuar?"
+    : "ATENÇÃO: esta rodovia ainda NÃO está toda travada.\n\nLiberar vai APAGAR do celular as medições e fotos que ainda não foram travadas. Só faça se você JÁ exportou os dados e ENTREGOU as fotos.\n\nContinuar?";
+  if(!confirm(msg)) return;
+  await idbDel("ref",cod); await idbDel("trab",cod);
+  try{ var fk=(await idbKeys("fotos")).filter(function(k){return String(k).indexOf(cod+"#")===0;}); for(var i=0;i<fk.length;i++){ await idbDel("fotos",fk[i]); } }catch(e){}
+  if(rodAtual===cod){ rodAtual=null; placas=[]; }
+  toast("Espaço liberado ✓");
+  abrirLiberar();
+}
+function fecharLiberar(){ document.getElementById("ovLiberar").style.display="none"; }
+
+/* ====== Exportar FOTOS em ZIP (offline, sem biblioteca) ====== */
+var _crcTab=(function(){var t=[];for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})();
+function _crc32(b){var c=0xFFFFFFFF;for(var i=0;i<b.length;i++)c=_crcTab[(c^b[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function _u32(v){return [v&0xFF,(v>>>8)&0xFF,(v>>>16)&0xFF,(v>>>24)&0xFF];}
+function _u16(v){return [v&0xFF,(v>>>8)&0xFF];}
+function dataURLtoBytes(d){var b=atob(String(d).split(",")[1]||"");var a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+function zipStore(files){
+  var enc=new TextEncoder(), chunks=[], central=[], offset=0;
+  files.forEach(function(f){
+    var nb=enc.encode(f.name), crc=_crc32(f.bytes), sz=f.bytes.length;
+    var lh=[].concat(_u32(0x04034b50),_u16(20),_u16(0),_u16(0),_u16(0),_u16(0),_u32(crc),_u32(sz),_u32(sz),_u16(nb.length),_u16(0));
+    chunks.push(new Uint8Array(lh)); chunks.push(nb); chunks.push(f.bytes);
+    var cd=[].concat(_u32(0x02014b50),_u16(20),_u16(20),_u16(0),_u16(0),_u16(0),_u16(0),_u32(crc),_u32(sz),_u32(sz),_u16(nb.length),_u16(0),_u16(0),_u16(0),_u16(0),_u32(0),_u32(offset));
+    central.push(new Uint8Array(cd)); central.push(nb);
+    offset += lh.length + nb.length + sz;
+  });
+  var cSize=0; central.forEach(function(c){cSize+=c.length;});
+  var end=new Uint8Array([].concat(_u32(0x06054b50),_u16(0),_u16(0),_u16(files.length),_u16(files.length),_u32(cSize),_u32(offset),_u16(0)));
+  var all=chunks.concat(central); all.push(end);
+  var total=0; all.forEach(function(a){total+=a.length;});
+  var out=new Uint8Array(total),pos=0; all.forEach(function(a){out.set(a,pos);pos+=a.length;});
+  return out;
+}
+/* nome do arquivo da foto = RODOVIA_km<KM> (sem índice). Se duas placas tiverem
+   o mesmo km, acrescenta _1/_2 para nunca sobrescrever. */
+function _sanRod(s){ return String(s||"foto").replace(/[^A-Za-z0-9-]/g,""); }
+function _sanTok(s){ return String(s||"").trim().replace(/[\/\\:*?"<>|\s]/g,"-"); }
+function nomeiaFotos(recs){
+  recs.sort(function(a,b){ return (parseInt(a.idx,10)||0)-(parseInt(b.idx,10)||0); });
+  var cont={};
+  recs.forEach(function(r){ var km=String(r.km||"").trim();
+    r._b=_sanRod(r.rod)+(km?("_km"+_sanTok(km)):("_"+(r.idx||"sn"))); cont[r._b]=(cont[r._b]||0)+1; });
+  var us={}, out=[];
+  recs.forEach(function(r){ var b=r._b, nome; if(cont[b]>1){ us[b]=(us[b]||0)+1; nome=b+"_"+us[b]+".jpg"; } else nome=b+".jpg";
+    out.push({name:nome, bytes:dataURLtoBytes(r.data)}); });
+  return out;
+}
+async function exportarFotos(){
+  if(!rodAtual){ toast("Abra uma rodovia primeiro"); return; }
+  var pref=rodAtual+"#";
+  var keys=(DB? await idbKeys("fotos"):[]).filter(function(k){return String(k).indexOf(pref)===0;});
+  if(!keys.length){ toast("Nenhuma foto salva nesta rodovia"); return; }
+  toast("Preparando "+keys.length+" foto(s)…");
+  var _recs=[];
+  for(var i=0;i<keys.length;i++){ var rec=await idbGet("fotos",keys[i]); if(!rec||!rec.data)continue; _recs.push(rec); }
+  var arqs=nomeiaFotos(_recs);
+  if(!arqs.length){ toast("Fotos indisponíveis"); return; }
+  // divide em partes <= ~90 MB (limite seguro p/ WhatsApp)
+  var LIM=90*1024*1024, lotes=[], cur=[], soma=0;
+  arqs.forEach(function(a){ if(soma+a.bytes.length>LIM && cur.length){ lotes.push(cur); cur=[]; soma=0; } cur.push(a); soma+=a.bytes.length; });
+  if(cur.length) lotes.push(cur);
+  var base=(rodAtual||"fotos").replace(/[^A-Za-z0-9-]/g,"");
+  _partesFotos=[];
+  for(var j=0;j<lotes.length;j++){
+    var zip=zipStore(lotes[j]);
+    var zn=base+"_fotos"+(lotes.length>1?("_parte"+(j+1)+"de"+lotes.length):"")+".zip";
+    _partesFotos.push({name:zn, file:new File([zip],zn,{type:"application/zip"}), mb:Math.max(1,Math.round(zip.length/1048576)), enviado:false});
+  }
+  renderPartesFotos();
+  if(_partesFotos.length===1) enviarParteFoto(0);   // 1 arquivo só: envia direto
+  else toast(_partesFotos.length+" partes — envie TODAS, uma de cada vez");
+}
+/* envio das fotos parte a parte: cada botão = 1 toque = 1 permissão de compartilhar
+   (enviar em laço perde a permissão após a 1ª parte e as demais somem — bug corrigido) */
+var _partesFotos=[];
+function renderPartesFotos(){
+  var box=document.getElementById("partesFotos"); if(!box) return;
+  var n=_partesFotos.length;
+  if(n<=1){ box.innerHTML=""; return; }
+  var html='<p class="dica" style="margin-top:10px;color:#c0392b"><b>As fotos passaram do limite do WhatsApp e foram divididas em '+n+' partes.</b> Envie <b>TODAS as '+n+'</b>, uma de cada vez — toque cada botão e mande no WhatsApp:</p>';
+  _partesFotos.forEach(function(p,i){
+    html+='<button class="btn '+(p.enviado?"btn-linha":"btn-primario")+'" style="margin-top:8px" onclick="enviarParteFoto('+i+')">'+(p.enviado?"✓ ":"📤 ")+"Enviar parte "+(i+1)+" de "+n+" (~"+p.mb+" MB)</button>";
+  });
+  var faltam=_partesFotos.filter(function(x){return !x.enviado;}).length;
+  html+='<p class="dica" style="margin-top:8px">'+(faltam?("Ainda falta(m) "+faltam+" parte(s)."):"Todas as partes enviadas ✓")+'</p>';
+  box.innerHTML=html;
+}
+function enviarParteFoto(i){
+  var p=_partesFotos[i]; if(!p) return;
+  var done=function(){ p.enviado=true; renderPartesFotos();
+    if(_partesFotos.length>1 && _partesFotos.every(function(x){return x.enviado;})) toast("Todas as partes enviadas ✓"); };
+  try{
+    if(navigator.canShare && navigator.canShare({files:[p.file]})){
+      navigator.share({files:[p.file],title:p.name}).then(done, function(e){
+        if(e && e.name==="AbortError") return;      // usuário cancelou — deixa reenviar
+        baixaFoto(p.file,p.name); done();           // falha real -> baixa nos downloads
+      });
+      return;
+    }
+  }catch(e){}
+  baixaFoto(p.file,p.name); done();                 // sem compartilhamento -> baixa
+}
+
+/* ====== Navegação interna ====== */
+function esconderTudo(){ ["Rod","Lista","Ficha","Config","Export","Lote","LoteForm","Retro"].forEach(function(s){document.getElementById("v"+s).classList.add("esconde");}); }
+function irPara(v){
+  if(vAtual==="ficha" && v!=="ficha" && sujo){ if(!confirm("Há alterações não salvas. Sair sem salvar?")) return; sujo=false; }
+  if(vAtual==="retro" && v!=="retro" && retroSujo){ if(!confirm("Há um ensaio de retro não salvo. Sair sem salvar?")) return; retroSujo=false; }
+  esconderTudo();
+  ["tLista","tExport","tConfig"].forEach(function(t){document.getElementById(t).classList.remove("ativo");});
+  var titulo=rodAtual||"PROSEG";
+  if(v==="lista"){document.getElementById("vLista").classList.remove("esconde");document.getElementById("tLista").classList.add("ativo");renderLista();}
+  if(v==="export"){document.getElementById("vExport").classList.remove("esconde");document.getElementById("tExport").classList.add("ativo");renderResumo();titulo="Exportar";}
+  if(v==="config"){document.getElementById("vConfig").classList.remove("esconde");document.getElementById("tConfig").classList.add("ativo");document.getElementById("cfgRod").textContent=rodAtual||"--";document.getElementById("cEmpresa").value=cfg.empresa||"";document.getElementById("cTecnico").value=cfg.tecnico||"";document.getElementById("cMedicao").value=cfg.medicao||"";titulo="Ajustes";}
+  if(v==="ficha"){document.getElementById("vFicha").classList.remove("esconde");}
+  if(v==="lote"){document.getElementById("vLote").classList.remove("esconde");document.getElementById("tLista").classList.add("ativo");renderLote();titulo="Marcadores em lote";}
+  if(v==="loteForm"){document.getElementById("vLoteForm").classList.remove("esconde");document.getElementById("tLista").classList.add("ativo");titulo="Lote de marcadores";}
+  document.getElementById("hdrTitulo").textContent=titulo;
+  document.getElementById("hdrSub").textContent="Sinalização Vertical · "+(rodAtual||"");
+  atualizaProg();
+  vAtual=v;
+}
+
+/* ====== Lista ====== */
+function renderLista(){
+  var bel=document.getElementById("busca");var q=bel?(bel.value||"").toLowerCase().trim():"";
+  var alvo=document.getElementById("listaPlacas");
+  var lista=placas.filter(function(p){
+    var okq=!q||(p.kmP||"").toLowerCase().indexOf(q)>=0||(p.cod||"").toLowerCase().indexOf(q)>=0;
+    var oks=filtroStatus==="todas"||(filtroStatus==="medida"?temRetro(p):!temRetro(p));
+    return okq&&oks;
+  });
+  var tt=placas.length,ff=placas.filter(function(p){return temRetro(p);}).length;
+  var et=document.getElementById("nTodas");if(et){et.textContent="("+tt+")";document.getElementById("nMed").textContent="("+ff+")";document.getElementById("nPend").textContent="("+(tt-ff)+")";}
+  if(!placas.length){alvo.innerHTML='<div class="vazio">Nenhuma placa nesta rodovia.</div>';atualizaProg();return;}
+  if(!lista.length){alvo.innerHTML='<div class="vazio">Nada encontrado.</div>';return;}
+  alvo.innerHTML=lista.map(function(p){
+    var temR=temRetro(p); var temF=!!(p.fotoThumb||p.foto);
+    var seloCls = temR?"retro":"pend";
+    var seloTxt = (temR?"✓ RETRO":"RETRO PEND.")+(temF?" · 📷":"");
+    return '<div class="placa '+(temR?"medida":"")+'" onclick="abrirRetro(\''+p.id+'\')">'+
+      '<div class="km"><b>KM</b><span>'+esc(p.kmP||"--")+'</span></div>'+
+      '<div class="info"><div class="cod">'+esc(p.cod||"Sem código")+'</div>'+
+      '<div class="det">'+esc(p.pel||"--")+' · '+esc(ladoDe(p.cod))+'</div></div>'+
+      '<div class="selo '+seloCls+'">'+seloTxt+'</div></div>';
+  }).join("");
+  atualizaProg();
+}
+function resumoSup(s){s=s||"";var m=s.match(/h=[\d,\.]+m/i);return (s.indexOf("Metálico")>=0?"Metálico ":"Polimérico ")+(m?m[0]:"");}
+function atualizaProg(){var t=placas.length,f=placas.filter(function(p){return p.status==="medida";}).length;var pct=t?Math.round(f/t*100):0;document.getElementById("progNum").textContent=f+" / "+t+" · "+pct+"%";document.getElementById("progFill").style.width=pct+"%";}
+function setFiltro(f,btn){filtroStatus=f;Array.prototype.forEach.call(document.querySelectorAll(".filtros .chip"),function(c){c.classList.remove("ativo");});btn.classList.add("ativo");renderLista();}
+
+/* ====== Ficha ====== */
+function abrirFicha(id){
+  if(vAtual==="lista") scrollLista=window.scrollY||document.documentElement.scrollTop||0;
+  atual=id;sujo=false;gpsTmp=null;
+  var p=placas.find(function(x){return x.id===id;});if(!p)return;
+  document.getElementById("fichaKm").textContent="Km "+(p.kmP||"--");
+  document.getElementById("fichaCod").textContent=p.cod||"Sem código";
+  var _ix=(p.imgIdx!=null?p.imgIdx:parseInt(String(p.id).slice(1),10));
+  var _img=(_ix>=0 && IMGS[_ix])?IMGS[_ix]:"";
+  document.getElementById("fichaCtx").innerHTML=
+    (_img?'<img class="placa-img" src="'+_img+'" onclick="zoom('+_ix+')" alt="Projeto da placa">':'')+
+    "<b>Projeto:</b> "+esc(p.sup||"--")+
+    '<div class="grid"><span>Qtde: <b>'+esc(p.qtd||"--")+'</b></span><span>Área: <b>'+esc(p.area||"--")+'</b> m²</span>'+
+    '<span>Dim.: <b>'+esc(p.larg||"--")+' × '+esc(p.altP||"--")+'</b> m</span><span>Película: <b>'+esc(p.pel||"--")+'</b></span>'+
+    '<span>Eixo: <b>'+esc(fmtEixo(p.eixo)||"--")+'</b></span></div>'+
+    (eixoDifere(p)?'<div style="margin-top:8px;background:#fbe7d2;color:#8a4b06;border-radius:8px;padding:9px 11px;font-size:13px;font-weight:600;line-height:1.4">⚠ Interseção: esta placa está no eixo <b>'+esc(fmtEixo(p.eixo))+'</b>. O km refere-se a essa rodovia, não à '+esc(normEixo(rodBase()))+'.</div>':'');
+  document.getElementById("fAltura").value=p.altura||"";
+  var _nsup=nSuportes(p);
+  document.getElementById("lblAltura").textContent = _nsup===2 ? "Altura do suporte 1 (m)" : "Altura do suporte instalado (m)";
+  document.getElementById("grupoAltura2").classList.toggle("esconde", _nsup!==2);
+  document.getElementById("fAltura2").value = p.altura2||"";
+  document.getElementById("fFoto").value=p.foto||sugereFoto();
+  document.getElementById("fObs").value=p.obs||"";
+  mostraPrevFoto();
+  marcaToggle("tgKm",p.kmOk);
+  marcaToggle("tgPinus",p.pinus);
+  setGpsBox(p.lat?(p.lat+", "+p.lng+" (±"+p.gpsAcc+" m)"):null,!!p.lat);
+  var bp=document.getElementById("btnPendente");if(bp)bp.style.display=(p.status==="medida")?"":"none";
+  var fechada=!!p.fechada;
+  document.getElementById("fichaFechada").classList.toggle("esconde",!fechada);
+  document.getElementById("fichaEdit").classList.toggle("esconde",fechada);
+  if(fechada) document.getElementById("fichaMedFech").textContent=p.fechada;
+  irPara("ficha");
+  document.getElementById("hdrTitulo").textContent="Km "+(p.kmP||"--");
+}
+function voltarFicha(){sujo=false;irListaScroll();}
+/* volta para a lista mantendo a posição de rolagem em que o usuário estava.
+   A lista tem miniaturas: a altura só estabiliza após as imagens renderizarem,
+   então restauramos a posição algumas vezes ao longo de ~250ms. */
+function irListaScroll(){irPara("lista");var y=scrollLista;[0,40,100,180,260].forEach(function(d){setTimeout(function(){window.scrollTo(0,y);},d);});}
+
+/* ====== Retrorrefletância ====== */
+var CORES_RETRO=["Branca","Vermelha","Amarela","Lima Limão","Azul","Verde","Marrom","Laranja"];
+/* Coeficientes mínimos (cd/lx/m²) na geometria 0,2º / -4°, por tipo de película e cor */
+var MIN_NBR={
+  "I":   {"Branca":70,"Amarela":50,"Laranja":25,"Verde":9,"Vermelha":14,"Azul":4,"Marrom":1},
+  "III": {"Branca":360,"Amarela":270,"Laranja":145,"Verde":50,"Vermelha":65,"Azul":30,"Marrom":18,"Lima Limão":290},
+  "X":   {"Branca":580,"Amarela":435,"Laranja":200,"Verde":58,"Vermelha":87,"Azul":26,"Marrom":17,"Lima Limão":460}
+};
+var COR_EXP={"Branca":"BRANCO","Vermelha":"VERMELHO","Amarela":"AMARELO","Lima Limão":"LIMA-LIMÃO","Azul":"AZUL","Verde":"VERDE","Marrom":"MARROM","Laranja":"LARANJA"};
+function tipoPelKey(pel){var s=(pel||"").toUpperCase();if(s.indexOf("III")>=0)return "III";if(s.indexOf("X")>=0)return "X";if(s.indexOf("I")>=0)return "I";return "";}
+function ladoCurto(cod){var c=(cod||"").toUpperCase();if(/LD/.test(c))return "LD";if(/LE/.test(c))return "LE";if(/LC/.test(c))return "LC";return "";}
+function mediaLeituras(arr){var ns=(arr||[]).map(function(v){return parseFloat(String(v).replace(",","."));}).filter(function(x){return !isNaN(x);});if(!ns.length)return null;var s=0;ns.forEach(function(x){s+=x;});return Math.round(s/ns.length*10)/10;}
+function minimoDe(pel,cor){var k=tipoPelKey(pel);if(!k||!MIN_NBR[k])return null;var m=MIN_NBR[k][cor];return (m==null?null:m);}
+var retroSujo=false, retroPlaca=null;
+function temRetro(p){return !!(p&&p.retro&&p.retro.cores&&p.retro.cores.length);}
+function ladoDe(cod){var c=(cod||"").toUpperCase();if(/LD/.test(c))return "Direito";if(/LE/.test(c))return "Esquerdo";if(/LC/.test(c))return "Central";return "--";}
+function corOptions(sel){return CORES_RETRO.map(function(c){return '<option value="'+c+'"'+(c===sel?" selected":"")+'>'+c+'</option>';}).join("");}
+function corBlocoHTML(cor,leituras){
+  leituras=leituras||["","","","",""];
+  var lts="";
+  for(var i=0;i<5;i++){lts+='<div class="lt"><label>Leitura '+(i+1)+'</label><input type="text" inputmode="decimal" class="rt-l" placeholder="0,0" value="'+esc(leituras[i]||"")+'" oninput="retroSujo=true;recalcBloco(this)"></div>';}
+  return '<div class="retro-cor">'+
+    '<div class="topo"><select class="rt-cor" onchange="retroSujo=true;recalcBloco(this)">'+corOptions(cor||"Branca")+'</select>'+
+    '<button type="button" class="rm" onclick="removerCor(this)" title="Excluir cor">✕</button></div>'+
+    '<div class="retro-leituras">'+lts+'</div><div class="retro-res"></div></div>';
+}
+function recalcBloco(el){
+  var b=el.closest(".retro-cor"); if(!b)return;
+  var cor=b.querySelector(".rt-cor").value;
+  var leit=Array.prototype.map.call(b.querySelectorAll(".rt-l"),function(i){return i.value;});
+  var med=mediaLeituras(leit);
+  var p=placas.find(function(x){return x.id===retroPlaca;});
+  var mn=p?minimoDe(p.pel,cor):null;
+  var res=b.querySelector(".retro-res");
+  if(med==null){res.innerHTML="";return;}
+  var t="Média: <b>"+((""+med).replace(".",","))+"</b>";
+  if(mn!=null){var ok=med>=mn;t+=' · Mín '+mn+' · <b style="color:'+(ok?"var(--verde)":"var(--vermelho)")+'">'+(ok?"APROVADO":"REPROVADO")+'</b>';}
+  res.innerHTML=t;
+}
+function recalcTodos(){Array.prototype.forEach.call(document.querySelectorAll("#retroCores .rt-cor"),function(s){recalcBloco(s);});}
+function addCor(cor,leituras){
+  document.getElementById("retroCores").insertAdjacentHTML("beforeend",corBlocoHTML(cor,leituras));
+  retroSujo=true;
+}
+function removerCor(btn){
+  var bloco=btn.closest(".retro-cor"); if(bloco){bloco.parentNode.removeChild(bloco);retroSujo=true;}
+}
+function abrirRetro(id){
+  var p=placas.find(function(x){return x.id===id;}); if(!p)return;
+  retroPlaca=id;
+  var ix=(p.imgIdx!=null?p.imgIdx:parseInt(String(p.id).slice(1),10));
+  document.getElementById("retroResumo").innerHTML=
+    '<div class="grid"><span>Placa: <b>'+esc(p.cod||"--")+'</b></span><span>KM: <b>'+esc(p.kmP||"--")+'</b></span>'+
+    '<span>Lado: <b>'+esc(ladoDe(p.cod))+'</b></span><span>Película: <b>'+esc(p.pel||"--")+'</b></span>'+
+    '<span>Foto: <b>'+esc(p.foto||"--")+'</b></span></div>';
+  var cont=document.getElementById("retroCores"); cont.innerHTML="";
+  var btnEx=document.getElementById("btnExcluirRetro");
+  if(temRetro(p)){
+    if(btnEx)btnEx.style.display="";
+    document.getElementById("retroData").value=p.retro.data||"";
+    p.retro.cores.forEach(function(c){addCor(c.cor,c.leituras);});
+  }else{
+    if(btnEx)btnEx.style.display="none";
+    document.getElementById("retroData").value="";
+    addCor("Branca");
+  }
+  retroSujo=false;
+  recalcTodos();
+  esconderTudo(); document.getElementById("vRetro").classList.remove("esconde"); vAtual="retro";
+  document.getElementById("hdrTitulo").textContent="Retro · "+(p.cod||p.kmP||"");
+  mostraPrevFotoRetro();
+  window.scrollTo(0,0);
+}
+function fecharRetro(){
+  if(retroSujo && !confirm("Há um ensaio de retro não salvo. Sair sem salvar?")) return;
+  retroSujo=false;
+  esconderTudo(); document.getElementById("vLista").classList.remove("esconde"); vAtual="lista"; renderLista();
+  var p=placas.find(function(x){return x.id===retroPlaca;});
+  document.getElementById("hdrTitulo").textContent="Km "+((p&&p.kmP)||"--");
+}
+function excluirRetro(){
+  var p=placas.find(function(x){return x.id===retroPlaca;}); if(!p)return;
+  if(!temRetro(p)){toast("Esta placa não tem ensaio");return;}
+  if(!confirm("Excluir o ensaio de retro desta placa? Esta ação não pode ser desfeita.")) return;
+  p.retro=null;
+  persist(); retroSujo=false;
+  toast("Ensaio de retro excluído ✓");
+  esconderTudo(); document.getElementById("vLista").classList.remove("esconde"); vAtual="lista"; renderLista();
+  document.getElementById("hdrTitulo").textContent="Km "+(p.kmP||"--");
+}
+function salvarRetro(){
+  var p=placas.find(function(x){return x.id===retroPlaca;}); if(!p)return;
+  var blocos=document.querySelectorAll("#retroCores .retro-cor");
+  var cores=[];
+  Array.prototype.forEach.call(blocos,function(b){
+    var cor=b.querySelector(".rt-cor").value;
+    var leituras=Array.prototype.map.call(b.querySelectorAll(".rt-l"),function(i){return (i.value||"").replace(".",",").trim();});
+    cores.push({cor:cor,leituras:leituras});
+  });
+  if(!cores.length){toast("Adicione ao menos uma cor");return;}
+  var data=document.getElementById("retroData").value.trim();
+  if(!data){data=new Date().toLocaleDateString("pt-BR");}
+  p.retro={data:data,cores:cores};
+  persist(); retroSujo=false;
+  toast("Ensaio de retro salvo ✓");
+  esconderTudo(); document.getElementById("vLista").classList.remove("esconde"); vAtual="lista"; renderLista();
+  document.getElementById("hdrTitulo").textContent="Km "+(p.kmP||"--");
+}
+function sugereFoto(){var n=placas.map(function(p){return parseInt(p.foto,10);}).filter(function(x){return !isNaN(x);});return n.length?(Math.max.apply(null,n)+1):1;}
+/* ===== Foto georreferenciada do RETRO (uma por placa; usa o mesmo carimbo+GPS) ===== */
+function tirarFotoRetro(){ pedirGPS(false); document.getElementById("retroFotoCam").click(); }
+function processaFotoRetro(input){
+  var file=input.files&&input.files[0]; if(!file){return;}
+  var p=placas.find(function(x){return x.id===retroPlaca;});
+  var reader=new FileReader();
+  reader.onload=function(e){ var img=new Image();
+    img.onload=async function(){
+      var maxE=1600,w=img.width,h=img.height,s=Math.min(1,maxE/Math.max(w,h));
+      var cw=Math.round(w*s),ch=Math.round(h*s);
+      var cv=document.createElement("canvas");cv.width=cw;cv.height=ch;
+      var ctx=cv.getContext("2d");ctx.drawImage(img,0,0,cw,ch);
+      if(gpsPromise){try{await gpsPromise;}catch(_e){}}
+      var g=fotoGps||null;
+      try{ desenhaCarimbo(ctx,cw,ch,{idx:(p&&p.foto)||"",rod:rodAtual,km:(p&&p.kmP)||"",g:g}); }catch(_e){}
+      var dataURL=cv.toDataURL("image/jpeg",0.85);
+      if(g&&window.piexif){ try{ dataURL=injetaGPS(dataURL,g); }catch(err){} }
+      var tb=document.createElement("canvas");var ts=Math.min(1,260/Math.max(cw,ch));tb.width=Math.round(cw*ts);tb.height=Math.round(ch*ts);
+      tb.getContext("2d").drawImage(cv,0,0,tb.width,tb.height);
+      if(p){ p.fotoThumb=tb.toDataURL("image/jpeg",0.55); p.fotoGps=g?(g.lat.toFixed(6)+","+g.lng.toFixed(6)):""; persist(); retroSujo=true; }
+      mostraPrevFotoRetro();
+      var km=(p&&p.kmP)?("km"+String(p.kmP).replace(/[\/\\:*?"<>|\s]/g,"-")):(p?p.id:"");
+      var nome=(rodAtual||"foto").replace(/[^A-Za-z0-9-]/g,"")+"_"+km+".jpg";
+      idbPut("fotos", rodAtual+"#"+(p?p.id:("sn_"+Date.now())), {nome:nome,data:dataURL,rod:rodAtual,idx:(p?p.id:""),km:(p&&p.kmP)||"",gps:(p&&p.fotoGps)||""});
+      toast("📷 Foto salva ✓");
+    }; img.src=e.target.result;
+  }; reader.readAsDataURL(file);
+}
+function mostraPrevFotoRetro(){ var el=document.getElementById("retroFotoPrev"); if(!el) return;
+  var p=placas.find(function(x){return x.id===retroPlaca;});
+  if(p&&p.fotoThumb){ el.innerHTML='<img src="'+p.fotoThumb+'" style="margin-top:10px;max-width:220px;border-radius:8px;border:2px solid var(--linha);display:block"><div class="dica" style="margin-top:4px">Foto registrada'+(p.fotoGps?" · georreferenciada ("+esc(p.fotoGps)+")":" · sem GPS")+'</div>'; }
+  else el.innerHTML="";
+}
+
+/* ====== Foto georreferenciada ====== */
+var fotoGps=null;
+var gpsPromise=null;
+/* dispara a captura de GPS em paralelo (a câmera abre já, no toque; a foto espera o GPS) */
+function pedirGPS(comPlaca){
+  fotoGps=null;
+  if(!navigator.geolocation){ gpsPromise=Promise.resolve(null); return; }
+  if(comPlaca) setGpsBox("Obtendo GPS…",false);
+  gpsPromise=new Promise(function(resolve){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      fotoGps={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy)};
+      if(comPlaca){ gpsTmp={lat:pos.coords.latitude.toFixed(6),lng:pos.coords.longitude.toFixed(6),acc:fotoGps.acc}; sujo=true; setGpsBox(gpsTmp.lat+", "+gpsTmp.lng+" (±"+gpsTmp.acc+" m)",true); }
+      resolve(fotoGps);
+    },function(){ fotoGps=null; if(comPlaca) setGpsBox("Sem GPS (sinal fraco) — a foto sairá sem coordenada",false); resolve(null); },{enableHighAccuracy:true,timeout:15000,maximumAge:8000});
+  });
+}
+function tirarFoto(){
+  var f=document.getElementById("fFoto");
+  if(!(f.value||"").trim()){ f.value=sugereFoto()||"1"; marcaSujo(); }
+  pedirGPS(true);
+  document.getElementById("fFotoCam").click();   // abre a câmera no MESMO toque (exigência do iOS)
+}
+function processaFoto(input){
+  var file=input.files&&input.files[0]; if(!file){return;}
+  var p=placas.find(function(x){return x.id===atual;});
+  var idx=(document.getElementById("fFoto").value||"").trim();
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=new Image();
+    img.onload=async function(){
+      var maxE=1600,w=img.width,h=img.height,s=Math.min(1,maxE/Math.max(w,h));
+      var cw=Math.round(w*s),ch=Math.round(h*s);
+      var cv=document.createElement("canvas");cv.width=cw;cv.height=ch;
+      var ctx=cv.getContext("2d");ctx.drawImage(img,0,0,cw,ch);
+      if(gpsPromise){try{await gpsPromise;}catch(_e){}}   // garante o GPS antes de carimbar
+      var g=fotoGps||((p&&p.lat)?{lat:parseFloat(p.lat),lng:parseFloat(p.lng),acc:p.gpsAcc}:null);
+      desenhaCarimbo(ctx,cw,ch,{idx:idx,rod:rodAtual,km:(p&&p.kmP)||"",g:g});
+      var dataURL=cv.toDataURL("image/jpeg",0.85);
+      if(g&&window.piexif){ try{ dataURL=injetaGPS(dataURL,g); }catch(err){} }
+      // miniatura leve
+      var tb=document.createElement("canvas");var ts=Math.min(1,260/Math.max(cw,ch));tb.width=Math.round(cw*ts);tb.height=Math.round(ch*ts);
+      tb.getContext("2d").drawImage(cv,0,0,tb.width,tb.height);
+      if(p){p.fotoThumb=tb.toDataURL("image/jpeg",0.55);p.foto=idx;p.fotoGps=g?(g.lat.toFixed(6)+","+g.lng.toFixed(6)):"";persist();sujo=true;}
+      mostraPrevFoto();
+      var nome=(rodAtual||"foto").replace(/[^\w\-]/g,"_")+"_"+(idx||"s_n")+".jpg";
+      idbPut("fotos", rodAtual+"#"+(idx||("sn_"+Date.now())), {nome:nome,data:dataURL,rod:rodAtual,idx:idx,km:(p&&p.kmP)||"",gps:(p&&p.fotoGps)||""});
+      toast("📷 Foto "+(idx||"")+" salva no app ✓");
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+  input.value="";
+}
+function desenhaCarimbo(ctx,w,h,info){
+  var linhas=[new Date().toLocaleString("pt-BR")];
+  linhas.push(info.g?(info.g.lat.toFixed(6)+", "+info.g.lng.toFixed(6)):"GPS indisponível");
+  if(info.rod)linhas.push(info.rod);
+  if(info.km)linhas.push("Km "+info.km);
+  var fs=Math.max(16,Math.round(w*0.030));
+  ctx.font="700 "+fs+"px system-ui,Arial,sans-serif";
+  ctx.textAlign="right";ctx.textBaseline="bottom";
+  var pad=Math.round(fs*0.6),lh=Math.round(fs*1.28),y=h-pad,x=w-pad;
+  for(var i=linhas.length-1;i>=0;i--){
+    ctx.lineWidth=Math.max(2,fs*0.18);ctx.strokeStyle="rgba(0,0,0,.85)";ctx.strokeText(linhas[i],x,y);
+    ctx.fillStyle="#fff";ctx.fillText(linhas[i],x,y);
+    y-=lh;
+  }
+}
+function injetaGPS(dataURL,g){
+  var lat=piexif.GPSHelper.degToDmsRational(g.lat), lng=piexif.GPSHelper.degToDmsRational(g.lng);
+  var gps={};
+  gps[piexif.GPSIFD.GPSVersionID]=[2,3,0,0];
+  gps[piexif.GPSIFD.GPSLatitudeRef]=g.lat<0?"S":"N";
+  gps[piexif.GPSIFD.GPSLatitude]=lat;
+  gps[piexif.GPSIFD.GPSLongitudeRef]=g.lng<0?"W":"E";
+  gps[piexif.GPSIFD.GPSLongitude]=lng;
+  var exifStr=piexif.dump({"GPS":gps});
+  return piexif.insert(exifStr,dataURL);
+}
+function dataURLtoBlob(dataURL){var a=dataURL.split(","),mime=a[0].match(/:(.*?);/)[1],b=atob(a[1]),n=b.length,u=new Uint8Array(n);while(n--)u[n]=b.charCodeAt(n);return new Blob([u],{type:mime});}
+function compartilhaFoto(dataURL,nome){
+  var blob=dataURLtoBlob(dataURL),file=new File([blob],nome,{type:"image/jpeg"});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:nome}).then(function(){toast("Foto pronta — toque em Salvar/Enviar");},function(){baixaFoto(blob,nome);});
+  }else{ baixaFoto(blob,nome); }
+}
+function baixaFoto(blob,nome){var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=nome;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url);},1500);toast("Foto salva nos downloads");}
+function mostraPrevFoto(){var p=placas.find(function(x){return x.id===atual;});var el=document.getElementById("fFotoPrev");if(!el)return;if(p&&p.fotoThumb){el.innerHTML='<img src="'+p.fotoThumb+'" style="margin-top:10px;max-width:170px;border-radius:8px;border:2px solid var(--linha);display:block"><div class="dica" style="margin-top:4px">Foto registrada'+(p.fotoGps?" · georreferenciada ("+esc(p.fotoGps)+")":" · sem GPS")+'</div><button class="btn" style="margin-top:8px;background:#fff;color:var(--vermelho);border:2px solid var(--vermelho)" onclick="apagarFoto()">🗑 Apagar foto</button>';}else{el.innerHTML="";}}
+function apagarFoto(){
+  var p=placas.find(function(x){return x.id===atual;}); if(!p)return;
+  if(!p.fotoThumb && !(p.foto||"").toString().trim()){toast("Esta placa não tem foto");return;}
+  if(!confirm("Apagar a foto desta placa? A imagem já salva na galeria não é afetada.")) return;
+  p.fotoThumb=""; p.fotoGps=""; p.foto="";
+  persist(); sujo=true;
+  document.getElementById("fFoto").value=sugereFoto();
+  mostraPrevFoto();
+  toast("Foto removida do app ✓");
+}
+function limparFotosRodovia(){
+  if(!confirm("Recomeçar a numeração de fotos desta rodovia? Isto apaga os números de índice e as miniaturas de TODAS as placas desta rodovia (as imagens já salvas na galeria não são afetadas). As medições não são alteradas.")) return;
+  placas.forEach(function(p){p.foto="";p.fotoThumb="";p.fotoGps="";});
+  persist();
+  toast("Numeração de fotos reiniciada — próxima começa em 1");
+  renderLista();
+}
+function setToggle(boxId,val,btn){var box=document.getElementById(boxId);Array.prototype.forEach.call(box.children,function(b){b.classList.remove("sel-sim","sel-nao");});btn.classList.add(val==="N"?"sel-nao":"sel-sim");box.dataset.val=val;marcaSujo();}
+function marcaToggle(boxId,val){var box=document.getElementById(boxId);box.dataset.val=val||"";Array.prototype.forEach.call(box.children,function(b){b.classList.remove("sel-sim","sel-nao");if(b.dataset.v===val)b.classList.add(val==="N"?"sel-nao":"sel-sim");});}
+function ajustaAltura(d){var el=document.getElementById("fAltura");var v=parseFloat((el.value||"0").replace(",","."));if(isNaN(v))v=0;v=Math.max(0,Math.round((v+d)*100)/100);el.value=v.toFixed(2).replace(".",",");marcaSujo();}
+function ajustaAltura2(d){var el=document.getElementById("fAltura2");var v=parseFloat((el.value||"0").replace(",","."));if(isNaN(v))v=0;v=Math.max(0,Math.round((v+d)*100)/100);el.value=v.toFixed(2).replace(".",",");marcaSujo();}
+/* nº de suportes a medir (do projeto: coluna Qtde Suporte). 2 => dois campos de altura */
+function nSuportes(p){ return (String(p&&p.qtd).trim()==="2") ? 2 : 1; }
+/* altura p/ exportar: com 2 suportes, junta na mesma célula ("1,30 / 1,45") */
+function altExport(p){
+  if(nSuportes(p)===2){ var a=(p.altura||"").trim(), b=(p.altura2||"").trim(); return (a&&b)?(a+" / "+b):(a||b||""); }
+  return p.altura||"";
+}
+function marcaSujo(){sujo=true;}
+function salvarFicha(prox){
+  var p=placas.find(function(x){return x.id===atual;});if(!p)return;
+  if(p.fechada){toast("Medição fechada — placa não editável");return;}
+  p.kmOk=document.getElementById("tgKm").dataset.val||"";
+  p.pinus=document.getElementById("tgPinus").dataset.val||"";
+  p.altura=(document.getElementById("fAltura").value||"").replace(".",",").trim();
+  p.altura2=(nSuportes(p)===2)?(document.getElementById("fAltura2").value||"").replace(".",",").trim():"";
+  p.foto=document.getElementById("fFoto").value.trim();
+  p.obs=document.getElementById("fObs").value.trim();
+  if(gpsTmp){p.lat=gpsTmp.lat;p.lng=gpsTmp.lng;p.gpsAcc=gpsTmp.acc;}
+  p.dataHora=new Date().toLocaleString("pt-BR");
+  p.status="medida";
+  persist();sujo=false;
+  if(prox){var pend=placas.filter(function(x){return x.status!=="medida";});if(pend.length){toast("Salvo. Próxima →");abrirFicha(pend[0].id);return;}toast("Tudo medido! 🎉");irListaScroll();return;}
+  toast("Placa salva ✓");irListaScroll();
+}
+function marcarPendente(){var p=placas.find(function(x){return x.id===atual;});if(!p)return;if(p.fechada){toast("Medição fechada — não pode voltar a pendente");return;}if(p.status!=="medida"){toast("Esta placa já está pendente");return;}p.status="pendente";p.kmOk="";p.altura="";p.altura2="";p.pinus="";persist();sujo=false;toast("Marcada como pendente ✓");irListaScroll();}
+
+/* ====== GPS ====== */
+function capturaGPS(){
+  if(!navigator.geolocation){toast("GPS indisponível");return;}
+  setGpsBox("Capturando...",false);
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var la=pos.coords.latitude.toFixed(6),lo=pos.coords.longitude.toFixed(6),ac=Math.round(pos.coords.accuracy);
+    gpsTmp={lat:la,lng:lo,acc:ac};sujo=true;setGpsBox(la+", "+lo+" (±"+ac+" m)",true);
+  },function(){setGpsBox("Falha no GPS — verifique a permissão de localização",false);},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+}
+function setGpsBox(txt,ok){var box=document.getElementById("gpsBox");document.getElementById("gpsTxt").innerHTML=txt?("📍 <b>"+esc(txt)+"</b>"):"GPS não capturado";box.classList.toggle("ok",!!ok);}
+
+/* ====== Config ====== */
+function salvarConfig(){cfg.empresa=document.getElementById("cEmpresa").value;cfg.tecnico=document.getElementById("cTecnico").value;cfg.medicao=document.getElementById("cMedicao").value;if(DB)idbPut("meta","cfg",cfg);}
+function zerarMedicoes(){if(!confirm("Apagar todas as MEDIÇÕES desta rodovia, mantendo a lista?"))return;placas.forEach(function(p){p.status="pendente";p.kmOk="";p.altura="";p.altura2="";p.pinus="";p.foto="";p.obs="";p.lat="";p.lng="";p.gpsAcc="";p.dataHora="";});persist();toast("Medições zeradas");irPara("lista");}
+
+/* ====== Lote: marcadores de alinhamento ====== */
+function kmM(s){var p=(s||"").trim().split("+");var a=parseFloat(p[0])||0;var b=parseFloat((p[1]||"0").replace(",","."))||0;return a*1000+b;}
+function gruposMarcadores(){var ms=placas.filter(function(p){return /^PSMA/i.test(p.cod||"");});ms.sort(function(a,b){return kmM(a.kmP)-kmM(b.kmP);});var g=[],cur=null,prev=null;ms.forEach(function(p){var m=kmM(p.kmP);if(prev===null||m-prev>300){cur={itens:[]};g.push(cur);}cur.itens.push(p);prev=m;});return g;}
+function renderLote(){
+  var g=gruposMarcadores(),alvo=document.getElementById("loteGrupos");
+  if(!g.length){alvo.innerHTML='<div class="vazio">Nenhum marcador de alinhamento (PSMA) nesta rodovia.</div>';return;}
+  alvo.innerHTML=g.map(function(gr,i){var med=gr.itens.filter(function(p){return p.status==="medida";}).length;var a=gr.itens[0].kmP,b=gr.itens[gr.itens.length-1].kmP;
+    return '<div class="placa" onclick="openGrupo('+i+')"><div class="info"><div class="cod">Curva '+(i+1)+' · km '+esc(a)+' a '+esc(b)+'</div><div class="det">'+gr.itens.length+' marcadores · '+esc(gr.itens[0].cod)+'</div></div><div class="selo '+(med===gr.itens.length?"feito":"pend")+'">'+med+'/'+gr.itens.length+'</div></div>';}).join("");
+}
+function openGrupo(i){var g=gruposMarcadores(),gr=g[i];if(!gr)return;atualGrupo=gr.itens.map(function(p){return p.id;});renderLoteForm(gr,i);irPara("loteForm");}
+function splitFoto(s,idx){if(!s)return"";var p=(""+s).split("/");return (p[idx]||"").trim();}
+function renderLoteForm(gr,i){
+  var a=gr.itens[0].kmP,b=gr.itens[gr.itens.length-1].kmP;
+  var f0=gr.itens.filter(function(p){return !p.fechada;})[0]||gr.itens[0];
+  var nEdit=gr.itens.filter(function(p){return !p.fechada;}).length;
+  var rows=gr.itens.map(function(p){
+    if(p.fechada) return '<div class="lote-row"><span class="lote-km">km '+esc(p.kmP)+'</span><span class="lote-alt" style="text-align:center;color:#0b4f8a;font-weight:700;background:#e7f0fb;border-radius:8px;padding:8px 0">🔒 MED '+p.fechada+'</span></div>';
+    return '<div class="lote-row"><span class="lote-km">km '+esc(p.kmP)+'</span><input type="text" inputmode="decimal" id="la_'+p.id+'" class="lote-alt" placeholder="altura (m)" value="'+esc(p.altura||"")+'"></div>';
+  }).join("");
+  document.getElementById("loteFormCard").innerHTML=
+    '<button class="btn btn-sec" style="margin-bottom:14px" onclick="sujo=false;irPara(\'lote\')">← Voltar</button>'+
+    '<h2>Marcadores · curva '+(i+1)+'</h2>'+
+    '<p class="dica">km '+esc(a)+' a '+esc(b)+' · '+gr.itens.length+' marcadores. Defina os itens comuns e digite a altura só nos que mediu.</p>'+
+    '<div class="grupo"><label class="campo">Todas instaladas no Km correto?</label><div class="toggle" id="lgKm"><button type="button" data-v="S" onclick="setToggle(\'lgKm\',\'S\',this)">Sim</button><button type="button" data-v="N" onclick="setToggle(\'lgKm\',\'N\',this)">Não</button></div></div>'+
+    '<div class="grupo"><label class="campo">Casca de pinus (todas)</label><div class="toggle" id="lgPinus"><button type="button" data-v="S" onclick="setToggle(\'lgPinus\',\'S\',this)">Sim</button><button type="button" data-v="N" onclick="setToggle(\'lgPinus\',\'N\',this)">Não</button></div></div>'+
+    '<div class="grupo"><label class="campo">Fotos georreferenciadas do grupo (2)</label>'+
+    '<div style="display:flex;gap:10px">'+
+      '<div style="flex:1"><input type="text" inputmode="numeric" id="lFoto1" placeholder="Foto 1" value="'+esc(splitFoto(f0.foto,0))+'" style="margin-bottom:6px"><button class="btn btn-linha" style="padding:10px;font-size:14px" onclick="tirarFotoLote(1)">📷 Foto 1</button><div id="lPrev1"></div></div>'+
+      '<div style="flex:1"><input type="text" inputmode="numeric" id="lFoto2" placeholder="Foto 2" value="'+esc(splitFoto(f0.foto,1))+'" style="margin-bottom:6px"><button class="btn btn-linha" style="padding:10px;font-size:14px" onclick="tirarFotoLote(2)">📷 Foto 2</button><div id="lPrev2"></div></div>'+
+    '</div>'+
+    '<input type="file" id="lFotoCam" accept="image/*" capture="environment" style="display:none" onchange="processaFotoLote(this)"></div>'+
+    '<label class="campo">Altura por marcador (m)</label>'+
+    '<div class="lote-lista">'+rows+'</div>'+
+    (nEdit>0
+      ? '<button class="btn btn-primario" style="margin-top:14px" onclick="salvarLote()">Salvar lote ('+nEdit+')</button>'
+      : '<p class="dica" style="margin-top:14px;text-align:center">🔒 Todos os marcadores deste grupo já estão fechados (medição concluída).</p>');
+  loteF0=f0.id; loteKmStr=esc(a)+" a "+esc(b);
+  marcaToggle("lgKm", f0.kmOk||"S");
+  marcaToggle("lgPinus", f0.pinus||"");
+  mostraPrevLote();
+  sujo=false;
+}
+var loteF0=null, loteQual=1, loteKmStr="";
+function proxFotoNum(){
+  var nums=[];
+  placas.forEach(function(p){(""+(p.foto||"")).split("/").forEach(function(x){var n=parseInt(x,10);if(!isNaN(n))nums.push(n);});});
+  [1,2].forEach(function(q){var el=document.getElementById("lFoto"+q);if(el){var n=parseInt(el.value,10);if(!isNaN(n))nums.push(n);}});
+  return nums.length?Math.max.apply(null,nums)+1:1;
+}
+function tirarFotoLote(qual){
+  loteQual=qual;
+  var el=document.getElementById("lFoto"+qual);
+  if(!(el.value||"").trim()){el.value=proxFotoNum();sujo=true;}
+  pedirGPS(false);
+  document.getElementById("lFotoCam").click();   // abre a câmera no MESMO toque
+}
+function processaFotoLote(input){
+  var file=input.files&&input.files[0]; if(!file){input.value="";return;}
+  var qual=loteQual; var f0=placas.find(function(x){return x.id===loteF0;}); if(!f0){input.value="";return;}
+  var idx=(document.getElementById("lFoto"+qual).value||"").trim();
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=new Image();
+    img.onload=async function(){
+      var maxE=1600,w=img.width,h=img.height,s=Math.min(1,maxE/Math.max(w,h));
+      var cw=Math.round(w*s),ch=Math.round(h*s);
+      var cv=document.createElement("canvas");cv.width=cw;cv.height=ch;var ctx=cv.getContext("2d");ctx.drawImage(img,0,0,cw,ch);
+      if(gpsPromise){try{await gpsPromise;}catch(_e){}}   // garante o GPS antes de carimbar
+      var g=fotoGps;
+      desenhaCarimbo(ctx,cw,ch,{g:g,rod:cfg.rodovia||"",km:loteKmStr,idx:idx});
+      var full=cv.toDataURL("image/jpeg",0.85);
+      if(g){try{full=injetaGPS(full,g);}catch(err){}}
+      var ts=Math.min(1,300/Math.max(cw,ch)),tw=Math.round(cw*ts),th2=Math.round(ch*ts);
+      var tcv=document.createElement("canvas");tcv.width=tw;tcv.height=th2;tcv.getContext("2d").drawImage(cv,0,0,tw,th2);
+      f0["loteThumb"+qual]=tcv.toDataURL("image/jpeg",0.6); f0["loteGps"+qual]=g?(g.lat.toFixed(6)+", "+g.lng.toFixed(6)):"";
+      persist(); sujo=true; mostraPrevLote();
+      var nome=(cfg.rodovia||"foto").replace(/[^A-Za-z0-9-]/g,"")+"_"+idx+".jpg";
+      idbPut("fotos", (rodAtual||cfg.rodovia)+"#"+(idx||("sn_"+Date.now())), {nome:nome,data:full,rod:(rodAtual||cfg.rodovia),idx:idx,km:loteKmStr||"",gps:f0["loteGps"+qual]||""});
+      toast("📷 Foto "+(idx||"")+" salva no app ✓");
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file); input.value="";
+}
+function mostraPrevLote(){
+  var f0=placas.find(function(x){return x.id===loteF0;});
+  [1,2].forEach(function(q){
+    var el=document.getElementById("lPrev"+q); if(!el)return;
+    if(f0&&f0["loteThumb"+q]){el.innerHTML='<img src="'+f0["loteThumb"+q]+'" style="margin-top:8px;max-width:100%;border-radius:8px;border:2px solid var(--linha);display:block"><div class="dica" style="margin-top:3px">'+(f0["loteGps"+q]?("GPS ✓ "+esc(f0["loteGps"+q])):"sem GPS")+'</div><button class="btn" style="margin-top:6px;padding:8px;font-size:13px;background:#fff;color:var(--vermelho);border:2px solid var(--vermelho)" onclick="apagarFotoLote('+q+')">🗑 Apagar</button>';}
+    else{el.innerHTML="";}
+  });
+}
+function apagarFotoLote(q){
+  var f0=placas.find(function(x){return x.id===loteF0;}); if(!f0)return;
+  if(!confirm("Apagar a Foto "+q+" deste grupo? A imagem já salva na galeria não é afetada."))return;
+  f0["loteThumb"+q]="";f0["loteGps"+q]="";var el=document.getElementById("lFoto"+q);if(el)el.value="";persist();sujo=true;mostraPrevLote();toast("Foto "+q+" removida");
+}
+function salvarLote(){
+  var km=document.getElementById("lgKm").dataset.val||"S";
+  var pin=document.getElementById("lgPinus").dataset.val||"";
+  var f1=document.getElementById("lFoto1").value.trim(),f2=document.getElementById("lFoto2").value.trim();
+  var foto=[f1,f2].filter(Boolean).join(" / ");
+  var agora=new Date().toLocaleString("pt-BR");
+  var nSalvos=0;
+  atualGrupo.forEach(function(id){var p=placas.find(function(x){return x.id===id;});if(!p)return;if(p.fechada)return;var alt=document.getElementById("la_"+id);if(alt)p.altura=(alt.value||"").replace(".",",").trim();p.kmOk=km;p.pinus=pin;p.foto=foto;p.status="medida";p.dataHora=agora;nSalvos++;});
+  persist();sujo=false;toast(nSalvos+" marcadores salvos ✓");irPara("lote");
+}
+
+/* ====== Exportação ====== */
+function renderResumo(){document.getElementById("rOk").textContent=placas.filter(function(p){return temRetro(p);}).length;document.getElementById("rPend").textContent=placas.filter(function(p){return !temRetro(p);}).length;}
+function splitKm(s){s=(s||"").trim();var p=s.split("+");var km=p[0]||"";var m=(p.length>1?p[1]:"");m=m.split(",")[0].split(".")[0].trim();return[km,m];}
+function rodBase(){return (rodAtual||"").replace(/\s*\(.*\)\s*$/,"").trim();}
+function simNao(v){return v==="S"?"Sim":(v==="N"?"Não":"");}
+// 13 colunas para colar a partir de C27 na planilha de medição
+// (inclui "Eixo": linhaPlan gera rodBase, eixo, cod, ... — o cabeçalho precisa bater com os 13 valores)
+var COLS_PLAN=["Rodovia","Eixo","Placa","Km","Fração","Suporte","Qtde Suporte","Altura do Suporte","Casca de Pinus","Tipo Película","Área (m²)","Fotos","Observação"];
+function fmtEixo(s){return (s||"").trim().replace(/\s+/g,"-").replace(/-+/g,"-");}
+function normEixo(s){return fmtEixo(s).toUpperCase().replace(/^PRC-/,"PR-");}
+function eixoDifere(p){var e=normEixo(p&&p.eixo);return e!=="" && e!==normEixo(rodBase());}
+function linhaPlan(p){var k=splitKm(p.kmP);return[rodBase(), fmtEixo(p.eixo), p.cod, k[0], k[1], p.sup, p.qtd, altExport(p), simNao(p.pinus), p.pel||"", p.area, p.foto, p.obs||""];}
+function copiarPlanilha(){var med=placas.filter(function(p){return p.status==="medida"&&!p.fechada;});if(!med.length){toast("Nenhuma placa medida ainda");return;}var txt=med.map(function(p){return linhaPlan(p).map(function(v){return v==null?"":(""+v);}).join("\t");}).join("\n");copiar(txt, med.length+" placas copiadas — cole na célula C27 da planilha");}
+/* monta as linhas de retro (uma por cor) — colunas B a V da aba de lançamento */
+function retroRows(){
+  var rows=[];
+  placas.filter(temRetro).forEach(function(p){
+    var lado=ladoCurto(p.cod);
+    var tipoExp=(p.pel||"").toUpperCase();
+    p.retro.cores.forEach(function(c,ci){
+      var med=mediaLeituras(c.leituras);
+      var mn=minimoDe(p.pel,c.cor);
+      var status=(med==null||mn==null)?"":(med>=mn?"APROVADO":"REPROVADO");
+      var L=c.leituras||[];
+      var prim=(ci===0); // primeira cor da placa leva os dados da placa; demais só cor + leituras
+      rows.push([
+        prim?(p.foto||""):"",         // B Foto
+        "",                            // C Formato (preencher)
+        "",                            // D Classificação (preencher)
+        "",                            // E Data Fabricação (preencher)
+        prim?(p.retro.data||""):"",   // F Data Medição
+        prim?(p.kmP||""):"",          // G km
+        prim?lado:"",                 // H POSIÇÃO
+        "",                            // I (vazio)
+        "",                            // J Posição
+        prim?"0,2º":"",               // K Ângulo Observação
+        prim?"-4°":"",                // L Ângulo Entrada
+        prim?tipoExp:"",              // M Tipo Película
+        COR_EXP[c.cor]||c.cor,        // N Cor Película
+        L[0]||"",L[1]||"",L[2]||"",L[3]||"",L[4]||"", // O-S leituras 1-5
+        (med==null?"":(""+med).replace(".",",")),     // T Média
+        (mn==null?"":(""+mn)),        // U Mínimo NBR
+        status                         // V Status
+      ]);
+    });
+  });
+  return rows;
+}
+function copiarRetro(){
+  var rows=retroRows();
+  if(!rows.length){toast("Nenhum ensaio de retro registrado");return;}
+  copiar(rows.map(function(r){return r.join("\t");}).join("\n"), rows.length+" linha(s) de retro copiadas — cole na aba de retro (B13)");
+}
+var COLS_RETRO=["Foto","Formato","Classificação","Data Fabricação","Data Medição","km","Posição","","Posição ","Ângulo Observação","Ângulo Entrada","Tipo Película","Cor Película","Leitura 1","Leitura 2","Leitura 3","Leitura 4","Leitura 5","Média","Mínimo NBR","Status"];
+function montaRetroCSV(){
+  var c=";";
+  var head=COLS_RETRO.join(c);
+  var corpo=retroRows().map(function(r){return r.map(campoCSV).join(c);}).join("\r\n");
+  return "﻿"+head+"\r\n"+corpo;
+}
+function nomeArqRetro(){var d=new Date(),z=function(n){return(n<10?"0":"")+n;};return (rodAtual||"retro").replace(/[^\w-]/g,"_")+"_RETRO_"+(cfg.medicao?("med"+cfg.medicao+"_"):"")+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+".csv";}
+function baixarRetroCSV(){var blob=new Blob([montaRetroCSV()],{type:"text/csv;charset=utf-8;"});var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=nomeArqRetro();document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url);},1500);}
+async function compartilharRetro(){
+  var rows=retroRows();
+  if(!rows.length){toast("Nenhum ensaio de retro registrado");return;}
+  var blob=new Blob([montaRetroCSV()],{type:"text/csv"});
+  var file=new File([blob],nomeArqRetro(),{type:"text/csv"});
+  try{ if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"Retro "+(rodAtual||""),text:"Ensaios de retrorrefletância — "+(rodAtual||"")}); return; } }catch(e){}
+  baixarRetroCSV(); toast("Compartilhamento indisponível — tabela baixada em CSV");
+}
+var COLS_CSV=COLS_PLAN.concat(["Km Instalado (S/N)","Medição","Empresa","Técnico","Data/Hora","Latitude","Longitude","Precisão GPS (m)"]);
+function linhaCSV(p){return linhaPlan(p).concat([simNao(p.kmOk),cfg.medicao||"",cfg.empresa||"",cfg.tecnico||"",p.dataHora||"",p.lat||"",p.lng||"",p.gpsAcc||""]);}
+function montaCSV(){var c=";";var h=COLS_CSV.join(c);var corpo=placas.filter(function(p){return p.status==="medida"&&!p.fechada;}).map(function(p){return linhaCSV(p).map(campoCSV).join(c);}).join("\r\n");return "\uFEFF"+h+"\r\n"+corpo;}
+function campoCSV(v){v=(v==null?"":""+v);if(/[";\n]/.test(v))v='"'+v.replace(/"/g,'""')+'"';return v;}
+function nomeArq(){var d=new Date(),z=function(n){return(n<10?"0":"")+n;};return (rodAtual||"medicao").replace(/[^\w-]/g,"_")+"_vertical_"+(cfg.medicao?("med"+cfg.medicao+"_"):"")+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+".csv";}
+function nMedidas(){return placas.filter(function(p){return p.status==="medida"&&!p.fechada;}).length;}
+function baixarCSV(){if(!nMedidas()){toast("Nenhuma placa medida ainda");return;}var blob=new Blob([montaCSV()],{type:"text/csv;charset=utf-8;"});var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=nomeArq();document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url);},1500);toast(nMedidas()+" registro(s) exportado(s)");}
+async function compartilhar(){if(!nMedidas()){toast("Nenhuma placa medida ainda");return;}var blob=new Blob([montaCSV()],{type:"text/csv"});var file=new File([blob],nomeArq(),{type:"text/csv"});try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Medição "+rodAtual,text:"Medição PROSEG "+rodAtual});return;}}catch(e){}baixarCSV();toast("Compartilhamento indisponível — arquivo baixado");}
+function copiar(txt,msg){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){toast(msg);},function(){copiaFB(txt,msg);});}else copiaFB(txt,msg);}
+function copiaFB(txt,msg){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast(msg);}catch(e){toast("Não foi possível copiar");}document.body.removeChild(ta);}
+
+/* ====== Zoom / util ====== */
+function zoom(ix){if(!(IMGS[ix]))return;document.getElementById("lbImg").src=IMGS[ix];document.getElementById("lightbox").classList.add("on");}
+function fecharZoom(){document.getElementById("lightbox").classList.remove("on");}
+function esc(s){return (""+s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+var toastT;function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("mostra");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("mostra");},2400);}
+
+/* ====== Service worker + start ====== */
+if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
+init();
+</script>
+</body>
+</html>
