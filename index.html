@@ -334,7 +334,7 @@ var manifest=[], rodAtual=null, placas=[], IMGS=[], cfg={empresa:"",tecnico:"",m
 var atual=null, sujo=false, gpsTmp=null, atualGrupo=[], vAtual="rod", filtroStatus="todas", scrollLista=0;
 
 function novaLista(arr){return arr.map(function(d,i){return{
-  id:"p"+i, imgIdx:i, cod:d.cod, kmP:d.kmP, sup:d.sup, qtd:d.qtd, larg:d.larg, altP:d.altP, area:d.area, pel:d.pel||"",
+  id:"p"+i, imgIdx:i, cod:d.cod, kmP:d.kmP, sup:d.sup, qtd:d.qtd, larg:d.larg, altP:d.altP, area:d.area, pel:d.pel||"", eixo:d.eixo||"",
   status:"pendente", kmOk:"", altura:"", altura2:"", pinus:"", foto:"", obs:"", lat:"",lng:"",gpsAcc:"", dataHora:"", retro:null, fotoThumb:"", fotoGps:"", fechada:0
 };});}
 /* aplica as "medições fechadas" (baixa definitiva) publicadas: arquivo pequeno
@@ -372,6 +372,7 @@ async function init(){
 /* ===== RETRO AVULSO: lê os .retro.json (placas da medição N) e agrupa (unifica nova/antiga, junta PRC-280) ===== */
 var RETROMAP={}, GRUPOS={}, GIMGS={};   // GIMGS: miniatura do projeto por placa (id -> imagem), não persistida
 function nomeUnif(cod){ return String(cod||"").replace(/\s*\(.*\)\s*$/,"").trim(); }  // "PR-427 (Antiga)"->"PR-427"; "PRC-280 (T2 Nova)"->"PRC-280"
+function kmNum(s){ s=String(s||"").trim(); var m=s.match(/(\d+)\s*\+\s*([\d.,]+)/); if(m) return parseInt(m[1],10)*1000+parseFloat(m[2].replace(",",".")); var f=parseFloat(s.replace(",",".")); return isFinite(f)?f:0; }
 async function carregarRetroMaps(){
   RETROMAP={}; GRUPOS={};
   await Promise.all(manifest.map(async function(it){
@@ -429,6 +430,7 @@ async function abrirGrupo(nome){
       p=Object.assign({},p); p.id="g"+(gi++); p.srcCod=it.codigo; p.srcIdx=ix; p.fechada=0;
       GIMGS[p.id]=imgs[ix]||""; merged.push(p); });
   }
+  merged.sort(function(a,b){ return kmNum(a.kmP)-kmNum(b.kmP); });   // ordem quilométrica (junta nova+antiga pela km)
   placas=merged; rodAtual=nome; cfg.rodovia=nome; cfg.medicao=String((membros[0]&&membros[0].medicao)||""); IMGS=[];
   var salvo=DB? await idbGet("trab",nome):null;
   if(salvo && salvo.length){ var byKey={}; salvo.forEach(function(p){ byKey[(p.srcCod||"")+"#"+p.srcIdx]=p; });
@@ -657,7 +659,8 @@ function renderLista(){
       thumb+
       '<div class="km"><b>KM</b><span>'+esc(p.kmP||"--")+'</span></div>'+
       '<div class="info"><div class="cod">'+esc(p.cod||"Sem código")+'</div>'+
-      '<div class="det">'+esc(p.pel||"--")+' · '+esc(ladoDe(p.cod))+'</div></div>'+
+      '<div class="det">'+esc(p.pel||"--")+' · '+esc(ladoDe(p.cod))+'</div>'+
+      (eixoDifere(p)?'<div class="det" style="color:#a8600c;font-weight:700">⚠ Eixo '+esc(fmtEixo(p.eixo))+'</div>':'')+'</div>'+
       '<div class="selo '+seloCls+'">'+seloTxt+'</div></div>';
   }).join("");
   atualizaProg();
@@ -762,7 +765,8 @@ function abrirRetro(id){
     (GIMGS[p.id]?'<img class="placa-img" src="'+GIMGS[p.id]+'" alt="Projeto da placa" style="max-width:170px;border-radius:8px;border:2px solid var(--linha);display:block;margin:0 auto 10px">':'')+
     '<div class="grid"><span>Placa: <b>'+esc(p.cod||"--")+'</b></span><span>KM: <b>'+esc(p.kmP||"--")+'</b></span>'+
     '<span>Lado: <b>'+esc(ladoDe(p.cod))+'</b></span><span>Película: <b>'+esc(p.pel||"--")+'</b></span>'+
-    '<span>Foto: <b>'+esc(p.foto||"--")+'</b></span></div>';
+    '<span>Foto: <b>'+esc(p.foto||"--")+'</b></span></div>'+
+    (eixoDifere(p)?'<div style="margin-top:8px;background:#fbe7d2;color:#8a4b06;border-radius:8px;padding:9px 11px;font-size:13px;font-weight:600;line-height:1.4">⚠ Interseção: esta placa está no eixo <b>'+esc(fmtEixo(p.eixo))+'</b>. O km refere-se a essa rodovia, não à '+esc(normEixo(rodBase()))+'.</div>':'');
   var cont=document.getElementById("retroCores"); cont.innerHTML="";
   var btnEx=document.getElementById("btnExcluirRetro");
   if(temRetro(p)){
