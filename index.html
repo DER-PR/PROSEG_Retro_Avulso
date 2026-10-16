@@ -142,11 +142,8 @@
     <!-- SELETOR DE RODOVIAS -->
     <section id="vRod">
       <div class="cartao" style="margin-bottom:14px">
-        <h2>Selecione a rodovia</h2>
-        <p class="dica">As rodovias baixadas funcionam offline. Para uso em campo sem sinal, baixe na base.</p>
-        <button class="btn btn-primario" id="btnBaixarTodas" onclick="baixarTodas()">⬇ Baixar todas para uso offline</button>
-        <div class="dlbar esconde" id="dlBar"><i id="dlFill"></i></div>
-        <button class="btn btn-sec" style="margin-top:10px" onclick="abrirLiberar()">🧹 Liberar espaço do aparelho</button>
+        <h2>Retro avulso</h2>
+        <p class="dica">Escolha a rodovia para registrar o <b>ensaio de retrorrefletância</b> e a <b>foto</b> das placas da medição. Precisa de internet uma vez para carregar as rodovias.</p>
       </div>
       <div id="listaRod"></div>
     </section>
@@ -373,7 +370,7 @@ async function init(){
   mostraRodovias();
 }
 /* ===== RETRO AVULSO: lê os .retro.json (placas da medição N) e agrupa (unifica nova/antiga, junta PRC-280) ===== */
-var RETROMAP={}, GRUPOS={};
+var RETROMAP={}, GRUPOS={}, GIMGS={};   // GIMGS: miniatura do projeto por placa (id -> imagem), não persistida
 function nomeUnif(cod){ return String(cod||"").replace(/\s*\(.*\)\s*$/,"").trim(); }  // "PR-427 (Antiga)"->"PR-427"; "PRC-280 (T2 Nova)"->"PRC-280"
 async function carregarRetroMaps(){
   RETROMAP={}; GRUPOS={};
@@ -422,14 +419,15 @@ async function mostraRodovias(){
 async function abrirGrupo(nome){
   var membros=GRUPOS[nome]; if(!membros||!membros.length){ toast("Grupo não encontrado"); return; }
   toast("Carregando "+nome+"…");
-  var merged=[], gi=0;
+  var merged=[], gi=0; GIMGS={};
   for(var mi=0;mi<membros.length;mi++){
     var it=membros[mi].it, indices=membros[mi].indices;
     var ref=DB? await idbGet("ref",it.codigo):null;
     if(!ref){ try{ var r=await fetch(VERT_BASE+it.arquivo+"?ts="+Date.now()); if(!r.ok) throw 0; ref=await r.json(); if(DB) await idbPut("ref",it.codigo,ref); }catch(e){ toast("Sem conexão para baixar "+it.codigo+". Conecte-se à internet."); return; } }
-    var base=novaLista(ref.placas||[]);
+    var base=novaLista(ref.placas||[]); var imgs=ref.imgs||[];
     indices.forEach(function(ix){ var p=base[ix]; if(!p) return;
-      p=Object.assign({},p); p.id="g"+(gi++); p.srcCod=it.codigo; p.srcIdx=ix; p.fechada=0; merged.push(p); });
+      p=Object.assign({},p); p.id="g"+(gi++); p.srcCod=it.codigo; p.srcIdx=ix; p.fechada=0;
+      GIMGS[p.id]=imgs[ix]||""; merged.push(p); });
   }
   placas=merged; rodAtual=nome; cfg.rodovia=nome; cfg.medicao=String((membros[0]&&membros[0].medicao)||""); IMGS=[];
   var salvo=DB? await idbGet("trab",nome):null;
@@ -654,7 +652,9 @@ function renderLista(){
     var temR=temRetro(p); var temF=!!(p.fotoThumb||p.foto);
     var seloCls = temR?"retro":"pend";
     var seloTxt = (temR?"✓ RETRO":"RETRO PEND.")+(temF?" · 📷":"");
+    var thumb=GIMGS[p.id]?'<img class="placa-thumb" src="'+GIMGS[p.id]+'" alt="">':'<div class="placa-thumb vazia"></div>';
     return '<div class="placa '+(temR?"medida":"")+'" onclick="abrirRetro(\''+p.id+'\')">'+
+      thumb+
       '<div class="km"><b>KM</b><span>'+esc(p.kmP||"--")+'</span></div>'+
       '<div class="info"><div class="cod">'+esc(p.cod||"Sem código")+'</div>'+
       '<div class="det">'+esc(p.pel||"--")+' · '+esc(ladoDe(p.cod))+'</div></div>'+
@@ -759,6 +759,7 @@ function abrirRetro(id){
   retroPlaca=id;
   var ix=(p.imgIdx!=null?p.imgIdx:parseInt(String(p.id).slice(1),10));
   document.getElementById("retroResumo").innerHTML=
+    (GIMGS[p.id]?'<img class="placa-img" src="'+GIMGS[p.id]+'" alt="Projeto da placa" style="max-width:170px;border-radius:8px;border:2px solid var(--linha);display:block;margin:0 auto 10px">':'')+
     '<div class="grid"><span>Placa: <b>'+esc(p.cod||"--")+'</b></span><span>KM: <b>'+esc(p.kmP||"--")+'</b></span>'+
     '<span>Lado: <b>'+esc(ladoDe(p.cod))+'</b></span><span>Película: <b>'+esc(p.pel||"--")+'</b></span>'+
     '<span>Foto: <b>'+esc(p.foto||"--")+'</b></span></div>';
